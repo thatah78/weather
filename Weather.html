@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Crop Weather Advisor — Weather-first Crop Guidance</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/* ---------- Theme & layout ---------- */
+:root{
+  --bg:#021428;         /* deep midnight */
+  --card:#07243d;       /* card deep-blue */
+  --accent:#2ec4f4;     /* cyan accent */
+  --muted:#a9d8ef;      /* muted cyan */
+  --text:#e6f8ff;       /* light text */
+  --alert:#ff9b5c;      /* warm alert/orange */
+  --success:#7ef7b0;    /* success green */
+  --radius:12px;
+  --glass: rgba(255,255,255,0.03);
+  --panel-shadow: 0 14px 40px rgba(0,0,0,0.6);
+  --max-w:1140px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+}
+
+/* base */
+*{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#021f38 90%);color:var(--text)}
+.container{max-width:var(--max-w);margin:30px auto;padding:18px}
+
+/* header / top report look (made professional) */
+.header {
+  display:flex;align-items:center;gap:14px;padding:16px;border-radius:12px;background:
+  linear-gradient(90deg, rgba(46,196,244,0.06), rgba(2,20,36,0.6));
+  border:1px solid rgba(255,255,255,0.04); box-shadow:var(--panel-shadow);
+}
+.logo {
+  width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#1fc2ff,#2ec4f4);display:flex;align-items:center;justify-content:center;font-weight:800;color:#022b36;
+  font-size:20px;box-shadow:0 6px 18px rgba(0,0,0,0.45);
+}
+.header h1{margin:0;font-size:20px}
+.header p{margin:0;color:var(--muted);font-size:13px}
+
+/* layout grid */
+.grid {display:grid;grid-template-columns:1fr 420px;gap:20px;margin-top:18px;align-items:start}
+.card {background:var(--card);border-radius:12px;padding:18px;box-shadow:var(--panel-shadow);border:1px solid rgba(255,255,255,0.03)}
+.card h2{margin:0 0 10px 0;font-size:16px}
+
+/* specialized layout classes */
+/* left controls remain sticky but DO NOT have their own internal scrollbar */
+.card-controls { position:sticky; top:24px; align-self:flex-start; }
+.card-results { max-height: calc(100vh - 120px); overflow:auto; }
+
+/* form styling */
+.field{display:flex;flex-direction:column;margin-bottom:12px}
+label{font-size:13px;color:var(--muted);margin-bottom:6px}
+input,select,button{font-size:14px}
+input,select{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:var(--text);outline:none}
+select option{background:#0b3a63;color:var(--text)}
+.row{display:flex;gap:10px;align-items:center}
+
+/* buttons */
+.btn{background:var(--accent);color:#012430;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+.btn.secondary{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.06)}
+.btn:disabled{opacity:0.6;cursor:not-allowed}
+
+/* forecast dropdown */
+.dropdown{position:relative}
+.dropdown-menu{position:absolute;top:42px;right:0;background:#052c43;border-radius:10px;padding:8px;border:1px solid rgba(255,255,255,0.04);display:none;min-width:220px;z-index:20}
+.dropdown-menu button{display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer}
+.dropdown-menu button:hover{background:rgba(255,255,255,0.02);color:var(--accent)}
+
+/* right column: results */
+.result-title{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.result-title .meta {text-align:right}
+.suggestions{white-space:pre-wrap;color:#dffcff;margin-top:12px;font-size:14px}
+.status-badge{padding:6px 10px;border-radius:8px;font-weight:700;font-size:13px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
+
+.alt-crops{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:12px}
+.crop-card{padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03);cursor:pointer;position:relative;overflow:hidden}
+.crop-card .label {display:flex;justify-content:space-between;align-items:center}
+.crop-card .info {display:none;margin-top:8px;color:var(--muted);font-size:13px}
+
+/* PROFESSIONAL INFO BUTTON (circular icon) */
+.info-btn {
+  width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));
+  color:var(--muted);font-weight:800;cursor:pointer;transition:0.12s;
+}
+.info-btn:focus{outline:2px solid rgba(46,196,244,0.18);}
+
+/* sliding info panel */
+.info-panel{
+  max-height:0; overflow:hidden; transition:max-height 0.32s ease, padding 0.24s ease;
+  padding:0 0; margin-top:8px; color:var(--muted); font-size:13px; border-top:1px dashed rgba(255,255,255,0.03);
+}
+.info-panel.open{ padding:10px 0; max-height:420px; }
+
+/* report header box (from photo) — made professional */
+.report-top {
+  margin-top:12px;padding:16px;border-radius:12px;background:linear-gradient(90deg, rgba(14,66,102,0.4), rgba(4,28,44,0.6));
+  border:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;align-items:flex-start;
+}
+.report-top h3{margin:0;font-size:18px}
+.report-top .left {max-width:70%}
+.report-top .right {text-align:right;color:var(--muted)}
+
+/* modal */
+.modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:2000}
+.modal{width:92%;max-width:880px;background:linear-gradient(180deg,#042b3f,#021827);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.04);color:var(--text);max-height:86vh;overflow:auto}
+.forecast-block{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.03)}
+.forecast-day{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.03)}
+
+/* alerts */
+.alert {padding:8px;border-radius:8px;margin-top:8px}
+.alert.warn {background:rgba(255,155,92,0.08);border:1px solid rgba(255,155,92,0.14);color:var(--alert)}
+.alert.danger {background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.12);color:#ff6b6b}
+.alert.ok {background:rgba(126,247,176,0.06);border:1px solid rgba(126,247,176,0.12);color:var(--success)}
+
+/* misc */
+.small{font-size:12px;color:var(--muted)}
+code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,0.02);padding:2px 6px;border-radius:6px}
+@media (max-width:980px){.grid{grid-template-columns:1fr} .card-controls{position:relative;top:auto;} }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- header -->
+  <div class="header">
+    <div class="logo">CWA</div>
+    <div>
+      <h1>Crop Weather Advisor</h1>
+      <p class="small">A savage little weather app that tells your crop what's up — and what you'll regret if you ignore it. (We don't mention the boring plumbing.)</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- left: form & controls -->
+    <section class="card card-controls" aria-labelledby="controlsTitle">
+      <h2 id="controlsTitle">Inputs & Quick Actions</h2>
+
+      <div class="field">
+        <label>State</label>
+        <select id="stateSelect"><option value="">— Select State —</option></select>
+      </div>
+
+      <div class="field">
+        <label>District</label>
+        <select id="districtSelect"><option value="">— Select District —</option></select>
+      </div>
+
+      <hr style="opacity:0.06;border:none;height:1px;margin:10px 0;background:linear-gradient(90deg,transparent,#083a64,transparent)">
+
+      <h2 style="font-size:14px;margin-top:6px">Live Weather Readings (auto-fill)</h2>
+
+      <div class="field"><label>Temperature (°C)</label><input id="temp" type="number" step="0.1" placeholder="—" /></div>
+
+      <div class="row">
+        <div style="flex:1" class="field"><label>Humidity (%)</label><input id="humidity" type="number" step="0.1" placeholder="—" /></div>
+        <div style="flex:1" class="field"><label>Recent Rain (24h, mm)</label><input id="recentRain" type="number" step="0.1" placeholder="—" /></div>
+      </div>
+
+      <div class="field"><label>Wind Speed (m/s)</label><input id="wind" type="number" step="0.1" placeholder="—" /></div>
+
+      <hr style="opacity:0.06;border:none;height:1px;margin:10px 0;background:linear-gradient(90deg,transparent,#083a64,transparent)">
+
+      <div class="field"><label>Intended Crop</label><select id="crop"><option value="">— Select Crop —</option></select></div>
+
+      <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:8px">
+        <div style="display:flex;gap:10px">
+          <button id="analyzeBtn" class="btn">Analyze</button>
+          <button id="downloadReportBtn" class="btn secondary">Export Report (PDF)</button>
+        </div>
+
+        <div class="dropdown">
+          <button id="forecastBtn" class="btn secondary">Forecast ▾</button>
+          <div id="forecastMenu" class="dropdown-menu" role="menu" aria-hidden="true">
+            <button id="next3Btn">Next 3 Days</button>
+            <button id="next7Btn">Weekly Overview</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="small" style="margin-top:12px">Pick a district to auto-fill the live weather fields. Or type manual values if you prefer to live dangerously.</p>
+    </section>
+
+    <!-- right: results -->
+    <aside class="card card-results" aria-labelledby="resultsTitle">
+      <div class="report-top">
+        <div class="left">
+          <h3 id="reportTitle">Weather-Centered Crop Report</h3>
+          <div class="small" id="reportSubtitle">Focus Crop: —</div>
+        </div>
+        <div class="right">
+          <div id="statusBadge" class="status-badge">Idle</div>
+          <div style="height:6px"></div>
+          <div class="small" id="updatedAt">No update yet</div>
+        </div>
+      </div>
+
+      <div id="suggestionsArea" class="suggestions" style="margin-top:12px">Awaiting input…</div>
+
+      <div id="irrigationBox" style="margin-top:12px"></div>
+
+      <div id="futureWarnings" style="margin-top:12px"></div>
+
+      <div style="margin-top:12px">
+        <h4 style="margin:6px 0">Cropping Patterns & Rotation</h4>
+        <div id="croppingPatterns" class="small">No crop selected.</div>
+      </div>
+
+      <div style="margin-top:12px">
+        <h4 style="margin:6px 0">Top alternative crops</h4>
+        <div id="altCrops" class="alt-crops" aria-live="polite"></div>
+      </div>
+    </aside>
+  </div>
+
+  <footer style="text-align:center;margin-top:18px;color:var(--muted);font-size:13px">Crop Weather Advisor • We tell it straight so your plants don’t revolt.</footer>
+</div>
+
+<!-- Forecast modal -->
+<div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" role="document" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Forecast</h3>
+    <div id="modalContent" style="margin-top:10px"></div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:12px">
+      <button id="modalClose" class="btn secondary">Close</button>
+      <button id="modalPdf" class="btn">Download PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* ========= Data (kept small & editable) ========= */
+const STATES = [
+  "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh",
+  "Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland",
+  "Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal",
+  "Andaman and Nicobar Islands","Chandigarh","Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry"
+];
+
+/* Example state->districts mapping. Expand as needed. */
+const DISTRICTS = {
+  "Assam": ["Cachar","Karimganj","Hailakandi","Nagaon","Kamrup","Tinsukia","Dibrugarh","Jorhat","Golaghat","Sonitpur"],
+  "Karnataka": ["Bengaluru Urban","Mysuru","Dharwad","Mangalore"],
+  "Maharashtra": ["Pune","Nagpur","Mumbai Suburban","Nashik"],
+  "Uttar Pradesh": ["Lucknow","Kanpur Nagar","Varanasi","Agra"],
+  "Tamil Nadu": ["Chennai","Coimbatore","Madurai","Tiruchirappalli"]
+};
+
+/* District coordinates — only districts with coords enable auto-fill */
+const DISTRICT_COORDS = {
+  "Cachar": {lat:24.83, lon:92.80}, "Karimganj": {lat:24.87, lon:92.35},
+  "Hailakandi": {lat:24.68, lon:92.56}, "Nagaon": {lat:26.35, lon:92.68},
+  "Kamrup": {lat:26.20, lon:91.60}, "Tinsukia": {lat:27.49, lon:95.36},
+  "Dibrugarh": {lat:27.47, lon:94.91}, "Jorhat": {lat:26.75, lon:94.22},
+  "Golaghat": {lat:26.52, lon:93.97}, "Sonitpur": {lat:26.65, lon:92.79},
+  "Pune": {lat:18.5204, lon:73.8567}, "Mumbai Suburban": {lat:19.0760, lon:72.8777},
+  "Bengaluru Urban": {lat:12.9716, lon:77.5946}, "Chennai": {lat:13.0827, lon:80.2707}
+};
+
+/* Crop DB: includes cropping patterns + water needs */
+const CROPS = [
+  {name:"Paddy", temp:[20,38], water: "High", pattern: "Rainfed/transplanted paddy → ratoon/maize rotation", info:"Warm-water crop; needs standing water during vegetative phase."},
+  {name:"Wheat", temp:[10,25], water: "Moderate", pattern: "Wheat → chickpea / mustard rotation", info:"Cool-season cereal; sensitive to high humidity at flowering."},
+  {name:"Maize", temp:[18,32], water: "Moderate", pattern: "Maize → legume rotation (improves N)", info:"Flexible; good in summer or kharif."},
+  {name:"Potato", temp:[12,25], water: "Moderate-High", pattern: "Potato → pulses rotation", info:"Cool preferred; avoid waterlogging at tuber initiation."},
+  {name:"Sugarcane", temp:[21,35], water: "High", pattern: "Long-season single crop; ratoon management", info:"Long duration; prefers moist, fertile soils."},
+  {name:"Tea", temp:[18,30], water: "High", pattern: "Perennial; intercropping with shade trees", info:"Perennial — high humidity and steady rainfall beneficial."},
+  {name:"Groundnut", temp:[20,35], water:"Moderate", pattern: "Groundnut → cereals/legumes rotation", info:"Prefers well-distributed rainfall and sandy-loam soils."},
+  {name:"Mustard", temp:[10,25], water:"Low-Moderate", pattern: "Mustard → wheat/legume rotation", info:"Cool-season oilseed; heavy rain near maturity lowers quality."},
+  {name:"Soybean", temp:[20,32], water:"Moderate", pattern: "Soybean → cereal rotation (break crop)", info:"Fixes N; good as a rotation crop."},
+  {name:"Barley", temp:[10,22], water:"Low-Moderate", pattern: "Barley → legume rotation", info:"Cool-season cereal; drought tolerant varieties exist."}
+];
+
+const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1/forecast';
+
+/* ========= DOM refs ========= */
+const stateSel = document.getElementById('stateSelect');
+const districtSel = document.getElementById('districtSelect');
+const cropSel = document.getElementById('crop');
+const tempEl = document.getElementById('temp');
+const humidityEl = document.getElementById('humidity');
+const recentRainEl = document.getElementById('recentRain');
+const windEl = document.getElementById('wind');
+
+const analyzeBtn = document.getElementById('analyzeBtn');
+const downloadReportBtn = document.getElementById('downloadReportBtn');
+const forecastBtn = document.getElementById('forecastBtn');
+const forecastMenu = document.getElementById('forecastMenu');
+const next3Btn = document.getElementById('next3Btn');
+const next7Btn = document.getElementById('next7Btn');
+
+const reportTitle = document.getElementById('reportTitle');
+const reportSubtitle = document.getElementById('reportSubtitle');
+const statusBadge = document.getElementById('statusBadge');
+const updatedAt = document.getElementById('updatedAt');
+const suggestionsArea = document.getElementById('suggestionsArea');
+const altCropsEl = document.getElementById('altCrops');
+const irrigationBox = document.getElementById('irrigationBox');
+const futureWarnings = document.getElementById('futureWarnings');
+const croppingPatterns = document.getElementById('croppingPatterns');
+
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalContent = document.getElementById('modalContent');
+const modalClose = document.getElementById('modalClose');
+const modalPdf = document.getElementById('modalPdf');
+
+/* ---------- Init selects ---------- */
+function initSelects(){
+  stateSel.innerHTML = '<option value="">— Select State —</option>';
+  STATES.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; stateSel.appendChild(o); });
+  districtSel.innerHTML = '<option value="">— Select District —</option>';
+  districtSel.style.display = 'block';
+  cropSel.innerHTML = '<option value="">— Select Crop —</option>';
+  CROPS.forEach(c => { const o=document.createElement('option'); o.value=c.name; o.textContent=c.name; cropSel.appendChild(o); });
+}
+initSelects();
+
+/* When a state is selected, populate districtSelect from DISTRICTS[state] if available.
+   Otherwise hide the district control (user can enter manual weather). */
+stateSel.addEventListener('change', () => {
+  const s = stateSel.value;
+  districtSel.innerHTML = '<option value="">— Select District —</option>';
+  if (s && DISTRICTS[s] && DISTRICTS[s].length) {
+    DISTRICTS[s].forEach(d => {
+      const o = document.createElement('option');
+      o.value = d;
+      o.textContent = d;
+      districtSel.appendChild(o);
+    });
+    districtSel.style.display = 'block';
+    districtSel.disabled = false;
+  } else {
+    districtSel.style.display = 'none';
+    districtSel.disabled = true;
+    districtSel.value = '';
+  }
+});
+
+/* ---------- Helpers: fetch JSON ---------- */
+async function safeFetch(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (e) {
+    console.warn('fetch error', e);
+    return null;
+  }
+}
+
+/* ---------- Auto-fill weather using Open-Meteo ----------
+   Requests current_weather + hourly relativehumidity_2m & precipitation for last 24h */
+async function fetchAndFillWeatherForCoords(lat, lon) {
+  statusBadge.textContent = 'Fetching weather…';
+  statusBadge.style.background = 'transparent';
+
+  const now = new Date();
+  const endDate = now.toISOString().slice(0,10);
+  const startDate = new Date(now.getTime() - 24*60*60*1000).toISOString().slice(0,10);
+
+  const params = new URLSearchParams({
+    latitude: String(lat),
+    longitude: String(lon),
+    current_weather: 'true',
+    hourly: 'relativehumidity_2m,precipitation',
+    timezone: 'auto',
+    start_date: startDate,
+    end_date: endDate
+  });
+  const url = `${OPEN_METEO_BASE}?${params.toString()}`;
+  const json = await safeFetch(url);
+  if (!json) {
+    statusBadge.textContent = 'Weather fetch failed';
+    statusBadge.style.color = 'var(--alert)';
+    return;
+  }
+
+  // Fill current values
+  if (json.current_weather) {
+    if (json.current_weather.temperature !== undefined) tempEl.value = Number(json.current_weather.temperature).toFixed(1);
+    if (json.current_weather.windspeed !== undefined) windEl.value = Number(json.current_weather.windspeed).toFixed(1);
+  }
+
+  // compute nearest humidity and last-24h precipitation
+  let humidity = null;
+  let precip24 = 0;
+  if (json.hourly && Array.isArray(json.hourly.time)) {
+    const times = json.hourly.time.map(t => new Date(t).getTime());
+    const rh = json.hourly.relativehumidity_2m || [];
+    const precip = json.hourly.precipitation || json.hourly.precipitation_sum || [];
+    const nowMs = Date.now();
+    const cutoff = nowMs - 24*3600*1000;
+    for (let i=0;i<times.length;i++){
+      if (times[i] > cutoff && times[i] <= nowMs) {
+        precip24 += Number(precip[i] ?? 0);
+      }
+    }
+    // nearest humidity
+    let bestIdx = -1, bestDiff = 1e18;
+    for (let i=0;i<times.length;i++){
+      const d = Math.abs(times[i] - nowMs);
+      if (d < bestDiff) { bestDiff = d; bestIdx = i; }
+    }
+    if (bestIdx >= 0 && rh[bestIdx] !== undefined) humidity = rh[bestIdx];
+  }
+
+  if (humidity !== null) humidityEl.value = Math.round(Number(humidity));
+  recentRainEl.value = Math.round((precip24 + Number.EPSILON) * 10) / 10;
+
+  statusBadge.textContent = 'Weather updated';
+  statusBadge.style.color = 'var(--muted)';
+  updatedAt.innerText = 'Updated: ' + new Date().toLocaleString();
+}
+
+/* auto-fetch when district selected */
+districtSel.addEventListener('change', async () => {
+  const d = districtSel.value;
+  if (!d) return;
+  const coords = DISTRICT_COORDS[d];
+  if (!coords) {
+    statusBadge.textContent = 'No coords';
+    statusBadge.style.color = 'var(--alert)';
+    return;
+  }
+  // clear fields while loading
+  tempEl.value = ''; humidityEl.value = ''; recentRainEl.value = ''; windEl.value = '';
+  await fetchAndFillWeatherForCoords(coords.lat, coords.lon);
+});
+
+/* ---------- Analysis logic: irrigation, warnings, patterns ---------- */
+
+/* irrigation suggestions: simple rule-of-thumb based on crop water need, recent rain, humidity & temp */
+function irrigationRecommendation({temp, humidity, recentRain}, cropObj) {
+  const t = Number(temp);
+  const h = Number(humidity);
+  const r = Number(recentRain);
+
+  let recs = [];
+  let need = cropObj.water || 'Moderate';
+  if (!Number.isNaN(r) && r > 30) recs.push('Significant recent rain — delay irrigation until field moisture stabilizes (1–3 days).');
+
+  if (!Number.isNaN(t) && !Number.isNaN(h) && t > 32 && h < 50 && (Number.isNaN(r) || r < 5)) {
+    recs.push('High temperature + low humidity + little rain → schedule irrigation today (early morning or late evening).');
+  }
+
+  if (need === 'High') {
+    recs.push('Crop requires high water: maintain consistent soil moisture; prefer 25–40 mm irrigation per irrigation event depending on growth stage.');
+  } else if (need === 'Moderate') {
+    recs.push('Moderate water need: top up moisture with 15–25 mm if no rain expected in next 3 days.');
+  } else {
+    recs.push('Low water need: avoid over-irrigation; 8–15 mm if prolonged drought conditions.');
+  }
+
+  recs.push('Irrigate in early morning (preferred) or late evening — avoid mid-day to reduce evaporation and stress.');
+
+  return recs;
+}
+
+/* cropping patterns information: returns pattern string for crop */
+function croppingPatternForCrop(crop) {
+  const c = CROPS.find(x => x.name === crop);
+  if (!c) return 'No cropping pattern data.';
+  return `Typical pattern: ${c.pattern}\nWater requirement: ${c.water}\nNote: ${c.info}`;
+}
+
+/* future warnings derived from forecast data (simple heuristics) */
+function warningsFromForecast(dailyArray) {
+  const warnings = [];
+  const heavy = dailyArray.filter(d => (d.rain ?? 0) >= 40);
+  if (heavy.length) warnings.push(`Heavy rainfall expected on ${heavy.map(h=>h.date).join(', ')} — waterlogging & runoff risk.`);
+
+  let consecHeat = 0, heatStart = null;
+  for (const d of dailyArray) {
+    if ((d.tmax ?? -999) >= 40) {
+      consecHeat++;
+      if (heatStart === null) heatStart = d.date;
+    } else {
+      if (consecHeat >= 3) warnings.push(`Heatwave alert (${heatStart} for ${consecHeat} days) — irrigation and shade recommended.`);
+      consecHeat = 0; heatStart = null;
+    }
+  }
+  if (consecHeat >= 3) warnings.push(`Heatwave alert (${heatStart} for ${consecHeat} days) — irrigation and shade recommended.`);
+
+  let dryCount = 0, dryStart = null;
+  for (const d of dailyArray) {
+    if ((d.rain ?? 0) === 0) {
+      dryCount++;
+      if (!dryStart) dryStart = d.date;
+    } else {
+      if (dryCount >= 7) warnings.push(`Dry spell predicted starting ${dryStart} for ${dryCount} days — adjust irrigation plan.`);
+      dryCount = 0; dryStart = null;
+    }
+  }
+  if (dryCount >= 7) warnings.push(`Dry spell predicted starting ${dryStart} for ${dryCount} days — adjust irrigation plan.`);
+
+  const windy = dailyArray.filter(d => (d.wind ?? 0) >= 12);
+  if (windy.length) warnings.push(`Strong winds forecast on ${windy.map(w=>w.date).join(', ')} — secure plastic mulch and postpone spraying.`);
+
+  return warnings;
+}
+
+/* make daily array from Open-Meteo daily response */
+function makeDailyArrayFromOpenMeteo(json) {
+  if (!json || !json.daily || !Array.isArray(json.daily.time)) return [];
+  const tmin = json.daily.temperature_2m_min || [];
+  const tmax = json.daily.temperature_2m_max || [];
+  const rain = json.daily.precipitation_sum || [];
+  const arr = json.daily.time.map((dt, i) => ({ date: dt, tmin: tmin[i], tmax: tmax[i], rain: rain[i] ?? 0 }));
+  return arr;
+}
+
+/* compatibility scoring (temp only) */
+function compatibilityScoreTemp(temp, crop) {
+  const mid = (crop.temp[0] + crop.temp[1]) / 2;
+  const span = Math.max(crop.temp[1] - crop.temp[0], 8);
+  const diff = Math.abs(temp - mid);
+  const score = Math.max(0, 1 - (diff / (span * 1.5)));
+  return Math.round(score * 100);
+}
+
+/* render alternate crops with professional info-button and sliding panel */
+function renderAlternateCrops(temp, focusCrop) {
+  const alt = CROPS.filter(c => c.name !== focusCrop).map(c => ({ ...c, score: compatibilityScoreTemp(temp, c) })).sort((a,b)=>b.score-a.score).slice(0,4);
+  altCropsEl.innerHTML = '';
+  alt.forEach((c, idx) => {
+    const card = document.createElement('div');
+    card.className = 'crop-card';
+    const uid = 'c_' + c.name.replace(/\s+/g, '_');
+    card.innerHTML = `
+      <div class="label">
+        <div><strong>${c.name}</strong><div class="small" style="color:var(--muted)">${c.info}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <div class="small" style="color:var(--muted)">${c.score}%</div>
+          <button aria-controls="info-${uid}" aria-expanded="false" id="btn-${uid}" class="info-btn" title="More info about ${c.name}">i</button>
+        </div>
+      </div>
+      <div id="info-${uid}" class="info-panel" role="region" aria-hidden="true">
+        <div style="font-weight:700;margin-bottom:6px">Why this crop?</div>
+        <div>${c.info}</div>
+        <div style="margin-top:8px;font-weight:700">Recommendations</div>
+        <div class="small">• Water need: ${c.water}<br>• Suggested rotation: ${c.pattern}<br>• When to plant: follow local advisories.</div>
+      </div>
+    `;
+    altCropsEl.appendChild(card);
+
+    // wire button & card click
+    const btn = document.getElementById(`btn-${uid}`);
+    const panel = document.getElementById(`info-${uid}`);
+    function togglePanel(openFromBtn=false){
+      const isOpen = panel.classList.contains('open');
+      if (isOpen) {
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden','true');
+        btn.setAttribute('aria-expanded','false');
+      } else {
+        // close other open panels
+        document.querySelectorAll('.info-panel.open').forEach(p => { p.classList.remove('open'); p.setAttribute('aria-hidden','true'); });
+        document.querySelectorAll('.info-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded','false'));
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden','false');
+        btn.setAttribute('aria-expanded','true');
+        if (!openFromBtn) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    btn.addEventListener('click', (ev) => { ev.stopPropagation(); togglePanel(true); });
+    card.addEventListener('click', () => { togglePanel(false); });
+  });
+}
+
+/* ---------- Main analyze function ---------- */
+async function analyze() {
+  const state = stateSel.value;
+  const district = districtSel.value;
+  const cropName = cropSel.value;
+  const tempVal = Number(tempEl.value);
+
+  if (!state) { suggestionsArea.innerText = 'Please select a State.'; return; }
+  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = 'Please select a district to auto-fill weather (or enter values manually).'; return; }
+  if (!cropName) { suggestionsArea.innerText = 'Please select an intended crop.'; return; }
+  if (Number.isNaN(tempVal)) { suggestionsArea.innerText = 'Temperature is required (auto-fill by selecting district or enter manually).'; return; }
+
+  const cropObj = CROPS.find(c => c.name === cropName);
+  if (!cropObj) { suggestionsArea.innerText = 'Crop data missing.'; return; }
+
+  reportSubtitle.innerText = `Focus Crop: ${cropName}`;
+  reportTitle.innerText = 'Weather-Centered Crop Report';
+
+  const score = compatibilityScoreTemp(tempVal, cropObj);
+  const humidity = humidityEl.value ? Number(humidityEl.value) : NaN;
+  const recentRain = recentRainEl.value ? Number(recentRainEl.value) : NaN;
+  const wind = windEl.value ? Number(windEl.value) : NaN;
+
+  // Build report text
+  let txt = `Crop: ${cropName}\nLocation: ${state}${district ? ' / ' + district : ''}\n\n`;
+  txt += `Observed Temperature: ${tempVal}°C\nCompatibility: ${score}% (based on temp)\n\n`;
+  txt += `Live weather inputs:\n• Humidity: ${isNaN(humidity) ? 'N/A' : humidity + '%'}\n• Recent rain (24h): ${isNaN(recentRain) ? 'N/A' : recentRain + ' mm'}\n• Wind: ${isNaN(wind) ? 'N/A' : wind + ' m/s'}\n\n`;
+
+  // irrigation recommendations
+  const irr = irrigationRecommendation({temp: tempVal, humidity, recentRain}, cropObj);
+  irrigationBox.innerHTML = `<div class="alert ok"><strong>Irrigation:</strong> ${irr[0]}</div>`; // highlight first line
+  const irrHtml = '<div style="margin-top:8px"><strong>Irrigation plan (tips):</strong><ul style="margin:6px 0 0 18px;color:var(--muted)">' + irr.map(r=>`<li>${r}</li>`).join('') + '</ul></div>';
+  irrigationBox.innerHTML += irrHtml;
+
+  // warnings from immediate inputs
+  const immediateWarnings = [];
+  if (!isNaN(humidity) && !isNaN(recentRain) && humidity > 85 && recentRain > 20) immediateWarnings.push('High disease risk (fungal/bacterial): consider protective sprays & field drainage.');
+  if (!isNaN(recentRain) && recentRain > 50) immediateWarnings.push('Very heavy recent rainfall — waterlogging likely; delay transplanting/sowing.');
+  if (!isNaN(wind) && wind > 10) immediateWarnings.push('Strong winds — secure mulches and postpone spraying.');
+
+  if (immediateWarnings.length) {
+    futureWarnings.innerHTML = '<div class="alert warn"><strong>Immediate warnings:</strong><ul style="margin:6px 0 0 18px">' + immediateWarnings.map(w=>`<li>${w}</li>`).join('') + '</ul></div>';
+  } else {
+    futureWarnings.innerHTML = '<div class="alert ok">No immediate critical warnings based on provided inputs.</div>';
+  }
+
+  // cropping patterns info
+  croppingPatterns.innerText = croppingPatternForCrop(cropName);
+
+  // forecast-based future warnings (if coords available) — fetch up to 7 days for overview
+  if (DISTRICT_COORDS[district]) {
+    const coords = DISTRICT_COORDS[district];
+    statusBadge.textContent = 'Fetching forecast…';
+    const dailyJson = await fetchDailyForecast(coords.lat, coords.lon, 7);
+    statusBadge.textContent = 'Weather updated';
+    if (dailyJson && dailyJson.daily) {
+      const dArr = makeDailyArrayFromOpenMeteo(dailyJson);
+      const w = warningsFromForecast(dArr);
+      if (w.length) {
+        futureWarnings.innerHTML += '<div style="margin-top:8px" class="alert danger"><strong>Forecast warnings:</strong><ul style="margin:6px 0 0 18px">' + w.map(x=>`<li>${x}</li>`).join('') + '</ul></div>';
+      } else {
+        futureWarnings.innerHTML += '<div style="margin-top:8px" class="alert ok">No severe forecast warnings for the next week.</div>';
+      }
+      window._lastForecastDaily = dArr; // store for later PDF or checks
+    } else {
+      futureWarnings.innerHTML += '<div class="small" style="margin-top:8px;color:var(--muted)">Forecast unavailable for future warnings.</div>';
+    }
+  }
+
+  // Present main suggestions text
+  txt += 'Recommendations (summary):\n' + irr.slice(0,3).map(r=>'• '+r).join('\n') + '\n\n';
+  txt += 'Notes: ' + cropObj.info + '\n';
+
+  suggestionsArea.innerText = txt;
+
+  // Render alternate crops
+  renderAlternateCrops(tempVal, cropName);
+
+  // store last report for PDF
+  window._lastReport = {
+    title: 'Crop Weather Advisor — Report',
+    generatedAt: new Date().toLocaleString(),
+    state, district, crop: cropName, temp: tempVal, humidity, recentRain, wind, score,
+    irrigation: irr, warningsImmediate: immediateWarnings, warningsForecast: window._lastForecastDaily || [], text: txt
+  };
+}
+
+/* ---------- Forecast modal rendering & PDF ---------- */
+function openModal(title, html, rawText='') {
+  document.getElementById('modalTitle').innerText = title || 'Forecast';
+  modalContent.innerHTML = html || '';
+  modalBackdrop.style.display = 'flex';
+  modalBackdrop.setAttribute('aria-hidden','false');
+  modalPdf.dataset.raw = rawText || '';
+  modalPdf.dataset.title = title || 'Forecast';
+}
+function closeModal(){ modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); modalContent.innerHTML = ''; modalPdf.dataset.raw=''; modalPdf.dataset.title=''; }
+modalClose.addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click',(e)=>{ if (e.target === modalBackdrop) closeModal(); });
+document.addEventListener('keydown',(e)=>{ if (e.key==='Escape' && modalBackdrop.style.display === 'flex') closeModal(); });
+
+/* fetch helpers: wrapper for daily forecasts */
+async function fetchDailyForecast(lat, lon, days=3) {
+  const url = `${OPEN_METEO_BASE}?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=${days}&timezone=auto`;
+  return await safeFetch(url);
+}
+
+/* Render functions for different horizons */
+async function handleNext3() {
+  const state = stateSel.value; const district = districtSel.value;
+  if (!state) { suggestionsArea.innerText = 'Please select a State.'; return; }
+  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = 'Please select a district.'; return; }
+  const coords = DISTRICT_COORDS[district];
+  if (!coords) { openModal('Next 3 Days', `<div class="forecast-block">Coordinates unavailable for selected location.</div>`, 'No data'); return; }
+  openModal('Next 3 Days', `<div class="forecast-block">Fetching…</div>`, '');
+  const data = await fetchDailyForecast(coords.lat, coords.lon, 3);
+  if (!data || !data.daily) { openModal('Next 3 Days', `<div class="forecast-block">Forecast unavailable.</div>`, 'Unavailable'); return; }
+  const days = data.daily.time.map((t,i)=>({date:t,tmin:data.daily.temperature_2m_min[i],tmax:data.daily.temperature_2m_max[i],rain:data.daily.precipitation_sum ? data.daily.precipitation_sum[i] : 0}));
+  let html = `<div class="small">Forecast for <strong>${district}, ${state}</strong></div>`;
+  days.forEach(d => {
+    html += `<div class="forecast-block"><div class="forecast-day"><div style="font-weight:700">${d.date}</div><div style="text-align:right">${d.tmin}–${d.tmax}°C</div></div><div class="small" style="margin-top:6px">Rain: ${d.rain} mm</div></div>`;
+  });
+  const raw = days.map(d => `${d.date}: ${d.tmin}–${d.tmax}°C, Rain ${d.rain} mm`).join('\n');
+  openModal('Next 3 Days Forecast', html, raw);
+}
+
+/* Weekly Overview (7 days) — summary + recommendations */
+async function handleWeeklyOverview() {
+  const state = stateSel.value; const district = districtSel.value;
+  if (!state) { suggestionsArea.innerText = 'Please select a State.'; return; }
+  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = 'Please select a district.'; return; }
+  const coords = DISTRICT_COORDS[district];
+  if (!coords) { openModal('Weekly Overview', `<div class="forecast-block">Coordinates unavailable for selected location.</div>`, 'No data'); return; }
+  openModal('Weekly Overview', `<div class="forecast-block">Fetching weekly data…</div>`, '');
+  const data = await fetchDailyForecast(coords.lat, coords.lon, 7);
+  if (!data || !data.daily) { openModal('Weekly Overview', `<div class="forecast-block">Forecast unavailable.</div>`, 'Unavailable'); return; }
+
+  const days = data.daily.time.map((t,i)=>({date:t,tmin:data.daily.temperature_2m_min[i],tmax:data.daily.temperature_2m_max[i],rain:data.daily.precipitation_sum ? data.daily.precipitation_sum[i] : 0}));
+  // summary metrics
+  const avgMin = (days.reduce((s,d)=>s + (d.tmin ?? 0),0) / days.length).toFixed(1);
+  const avgMax = (days.reduce((s,d)=>s + (d.tmax ?? 0),0) / days.length).toFixed(1);
+  const totalRain = (days.reduce((s,d)=>s + (d.rain ?? 0),0)).toFixed(1);
+
+  // build recommendations (simple heuristics)
+  const recs = [];
+  if (totalRain >= 50) recs.push('Significant rain expected this week — postpone irrigation and watch for waterlogging.');
+  if (avgMax >= 38) recs.push('High average max temps — prioritize irrigation during early morning / evening; consider shade for sensitive crops.');
+  if (days.some(d=>d.rain >= 40)) recs.push('One or more heavy rain days expected — secure soil bunds and check drainage.');
+  if (recs.length === 0) recs.push('No extreme conditions expected — follow normal irrigation schedule and monitor daily.');
+
+  // warnings
+  const warnings = warningsFromForecast(days);
+
+  // prepare HTML
+  let html = `<div class="small">7-day overview for <strong>${district}, ${state}</strong></div>`;
+  html += `<div class="forecast-block"><div style="font-weight:700">Summary</div><div class="small" style="margin-top:6px">Avg Min: ${avgMin}°C — Avg Max: ${avgMax}°C — Total Rain: ${totalRain} mm</div></div>`;
+  html += `<div class="forecast-block"><div style="font-weight:700">Recommendations</div><ul style="margin:6px 0 0 18px;color:var(--muted)">${recs.map(r=>`<li>${r}</li>`).join('')}</ul></div>`;
+  if (warnings.length) html += `<div class="forecast-block"><div style="font-weight:700;color:var(--alert)">Warnings</div><ul style="margin:6px 0 0 18px;color:var(--muted)">${warnings.map(w=>`<li>${w}</li>`).join('')}</ul></div>`;
+  html += `<div style="margin-top:10px;"><details><summary style="cursor:pointer">Daily details</summary>${days.map(d=>`<div class="forecast-block"><div class="forecast-day"><div style="font-weight:700">${d.date}</div><div style="text-align:right">${d.tmin}–${d.tmax}°C</div></div><div class="small" style="margin-top:6px">Rain: ${d.rain} mm</div></div>`).join('')}</details></div>`;
+
+  const raw = [`Summary: AvgMin ${avgMin}°C, AvgMax ${avgMax}°C, Total Rain ${totalRain} mm`].concat(days.map(d=>`${d.date}: ${d.tmin}–${d.tmax}°C, Rain ${d.rain} mm`)).join('\n');
+
+  openModal('Weekly Overview', html, raw);
+}
+
+/* modal PDF export (styled readable white background) */
+modalPdf.addEventListener('click', () => {
+  const raw = modalPdf.dataset.raw || '';
+  const title = modalPdf.dataset.title || 'Forecast';
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:'a4'});
+  // white page with dark text for readability
+  doc.setTextColor(20,20,20);
+  doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.text(title, 14, 14);
+  doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.text('Crop Weather Advisor', 14, 20);
+  const lines = doc.splitTextToSize(raw || 'No data', 180);
+  doc.setFontSize(10); doc.setTextColor(30,30,30);
+  doc.text(lines, 14, 30);
+  doc.save(`${title.replace(/\s+/g,'_')}.pdf`);
+});
+
+/* ---------- Wire UI ---------- */
+forecastBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const show = forecastMenu.style.display === 'block';
+  forecastMenu.style.display = show ? 'none' : 'block';
+  forecastMenu.setAttribute('aria-hidden', String(!show));
+});
+document.addEventListener('click',(e)=>{ if (!forecastMenu.contains(e.target) && e.target !== forecastBtn) forecastMenu.style.display = 'none'; });
+
+next3Btn.addEventListener('click', handleNext3);
+next7Btn.addEventListener('click', handleWeeklyOverview);
+
+analyzeBtn.addEventListener('click', analyze);
+downloadReportBtn.addEventListener('click', () => {
+  const rep = window._lastReport;
+  if (!rep) { alert('Run analysis first'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:'a4'});
+  // white background + dark text for readability
+  doc.setTextColor(20,20,20);
+  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.text('Crop Weather Advisor — Report', 14, 12);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.text(`Generated: ${rep.generatedAt}`, 14, 18);
+  doc.text(`Location: ${rep.state}${rep.district ? ' / '+rep.district : ''}`, 140, 18, {align:'right'});
+  let y = 30;
+  doc.setFontSize(10); doc.setFont('helvetica','bold');
+  doc.text('Parameter', 14, y);
+  doc.text('Value', 90, y);
+  doc.text('Notes', 150, y);
+  y += 6;
+  doc.setFont('helvetica','normal');
+  function row(label, value, note) {
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.text(label, 14, y);
+    doc.text(String(value), 90, y);
+    const wrapped = doc.splitTextToSize(String(note), 54);
+    doc.text(wrapped, 150, y);
+    y += 6 * wrapped.length;
+  }
+  row('Crop', rep.crop, '');
+  row('Temp (obs)', rep.temp + ' °C', `Compatibility ${rep.score}%`);
+  row('Humidity', isNaN(rep.humidity) ? 'N/A' : rep.humidity+' %', '');
+  row('Recent rain', isNaN(rep.recentRain) ? 'N/A' : rep.recentRain+' mm', '');
+  row('Wind', isNaN(rep.wind) ? 'N/A' : rep.wind + ' m/s', '');
+  y += 6;
+  doc.setFont('helvetica','bold'); doc.text('Irrigation guidance', 14, y); y += 6;
+  doc.setFont('helvetica','normal');
+  const irrLines = doc.splitTextToSize((rep.irrigation || []).join('\n'), 180);
+  doc.text(irrLines, 14, y); y += irrLines.length * 6;
+  if (rep.warningsImmediate && rep.warningsImmediate.length) {
+    y += 6; doc.setFont('helvetica','bold'); doc.text('Immediate warnings', 14, y); y += 6;
+    doc.setFont('helvetica','normal');
+    const wlines = doc.splitTextToSize(rep.warningsImmediate.join('\n'), 180);
+    doc.text(wlines, 14, y); y += wlines.length * 6;
+  }
+  doc.save(`${rep.crop.replace(/\s+/g,'_')}_CWA_Report.pdf`);
+});
+
+/* modal close */
+document.getElementById('modalClose').addEventListener('click', closeModal);
+
+/* enter to analyze */
+['temp','humidity','recentRain','wind','crop','stateSelect','districtSelect'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); analyze(); }});
+});
+</script>
+</body>
+</html>
