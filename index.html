@@ -168,6 +168,7 @@ code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,0.02);pa
 
       <div class="row">
         <div style="flex:1" class="field"><label data-i18n="controls.humidity">Humidity (%)</label><input id="humidity" type="number" step="0.1" placeholder="—" /></div>
+        <div style="flex:1" class="field"><label data-i18n="controls.ph">Soil pH</label><input id="ph" type="number" step="0.1" placeholder="—" min="0" max="14" /></div>
         <div style="flex:1" class="field"><label data-i18n="controls.recentRain">Recent Rain (24h, mm)</label><input id="recentRain" type="number" step="0.1" placeholder="—" /></div>
       </div>
 
@@ -305,6 +306,7 @@ const TRANSLATIONS = {
     'controls.liveTitle': 'Live weather readings (auto-complete)',
     'controls.temp': 'Temperature (°C)',
     'controls.humidity': 'Humidity (%)',
+    'controls.ph': 'Soil pH',
     'controls.recentRain': 'Recent rainfall (24 hours, mm)',
     'controls.wind': 'Wind speed (m/s)',
     'controls.cropLabel': 'Scheduled crop',
@@ -337,6 +339,10 @@ const TRANSLATIONS = {
     'msg.moderateWater': 'Moderate water need: top up moisture with 15–25 mm if no rain expected in next 3 days.',
     'msg.lowWater': 'Low water need: avoid over-irrigation; 8–15 mm if prolonged drought conditions.',
     'msg.irrigateTiming': 'Irrigate in early morning (preferred) or late evening — avoid mid-day to reduce evaporation and stress.',
+    'msg.irrigation': 'Irrigation:',
+    'msg.irrigationPlan': 'Irrigation plan (tips):',
+    'msg.phLow': 'Soil pH is acidic — consider liming to raise pH (follow local extension recommendations).',
+    'msg.phHigh': 'Soil pH is alkaline — consider sulfur or acidifying amendments (follow local advice).',
     'msg.whyThis': 'Why this crop?',
     'msg.recommendations': 'Recommendations',
     'msg.waterNeed': 'Water need',
@@ -409,6 +415,10 @@ const TRANSLATIONS = {
     'msg.moderateWater': 'मध्यम जल आवश्यकता: यदि अगले 3 दिनों में बारिश नहीं है तो 15–25 मिमी पानी दें।',
     'msg.lowWater': 'कम जल आवश्यकता: अत्यधिक सिंचाई से बचें; लंबी सूखे में 8–15 मिमी दें।',
     'msg.irrigateTiming': 'सुबह के समय (प्राथमिक) या देर शाम को सिंचाई करें — मध्याह्न से बचें।',
+    'msg.irrigation': 'सिंचाई:',
+    'msg.irrigationPlan': 'सिंचाई योजना (सुझाव):',
+    'msg.phLow': 'मिट्टी अम्लीय है — pH बढ़ाने के लिए चूना (लाइम) पर विचार करें।',
+    'msg.phHigh': 'मिट्टी क्षारीय है — सल्फर या अम्लीकरण उपायों पर विचार करें।',
     'msg.whyThis': 'यह फसल क्यों?',
     'msg.recommendations': 'सिफारिशें',
     'msg.waterNeed': 'जल आवश्यकता',
@@ -481,6 +491,10 @@ const TRANSLATIONS = {
     'msg.moderateWater': 'মধ্যম জল প্রয়োজন: যদি ৩ দিনের মধ্যে বৃষ্টি না হয়, 15–25 মিমি দিন।',
     'msg.lowWater': 'কম জল প্রয়োজন: অতিরিক্ত সেচ এড়ান; দীর্ঘ শুষ্কতা হলে 8–15 মিমি দিন।',
     'msg.irrigateTiming': 'সেরা সময়: সকালে বা সন্ধ্যায় সেচ করুন — দুপুরে এড়িয়ে চলুন।',
+    'msg.irrigation': 'সেচ:',
+    'msg.irrigationPlan': 'সেচ পরিকল্পনা (টিপস):',
+    'msg.phLow': 'মাটি অ্যাসিডিক — pH বাড়ানোর জন্য লাইম প্রয়োগ বিবেচনা করুন।',
+    'msg.phHigh': 'মাটি ক্ষারীয় — সালফার বা অ্যাসিডিফাইং পদক্ষেপ বিবেচনা করুন।',
     'msg.whyThis': 'এই ফসল কেন?',
     'msg.recommendations': 'সুপারিশ',
     'msg.waterNeed': 'জল প্রয়োজন',
@@ -553,6 +567,10 @@ const TRANSLATIONS = {
     'msg.moderateWater': 'মধ্যম পানীয় প্ৰয়োজন: ৩ দিনত বৰষুণ নাযায়লে 15–25 মিমি দিয়ক।',
     'msg.lowWater': 'কম পানীয় প্ৰয়োজন: অধিক সেচ এৰিব; দীঘল শোকত 8–15 মিমি দিয়ক।',
     'msg.irrigateTiming': 'সকলোতকৈ ভাল সময়: পুৱা বা সন্ধিয়া সেচ কৰক — মধ্যাহ্ন এৰক।',
+    'msg.irrigation': 'সেচ:',
+    'msg.irrigationPlan': 'সেচ পৰিকল্পনা (টিপচ):',
+    'msg.phLow': 'মাটি অ্যাসিডিক — pH বৃদ্ধি কৰিবলৈ লাইম বিবেচনা কৰক।',
+    'msg.phHigh': 'মাটি ক্ষারীয় — সালফাৰ বা অন্য অ্যাসিডিফাইং পদক্ষেপ বিবেচনা কৰক।',
     'msg.whyThis': 'কিয় এই ফচল?',
     'msg.recommendations': 'সুপাৰিশ',
     'msg.waterNeed': 'পানীয় প্ৰয়োজন',
@@ -605,6 +623,7 @@ const tempEl = document.getElementById('temp');
 const humidityEl = document.getElementById('humidity');
 const recentRainEl = document.getElementById('recentRain');
 const windEl = document.getElementById('wind');
+const phEl = document.getElementById('ph');
 
 const analyzeBtn = document.getElementById('analyzeBtn');
 const downloadReportBtn = document.getElementById('downloadReportBtn');
@@ -670,6 +689,18 @@ langSel.addEventListener('change', () => {
     reportSubtitle.innerText = `${t('report.title')}: ${localizeCropName(window._lastReport.crop)}`;
     // re-render alternate crops with same temp/crop
     renderAlternateCrops(window._lastReport.temp, window._lastReport.crop);
+
+    // Re-bind forecast/menu buttons to ensure handlers still work after language change
+    try {
+      if (typeof next3Btn !== 'undefined') next3Btn.onclick = handleNext3;
+      if (typeof next7Btn !== 'undefined') next7Btn.onclick = handleWeeklyOverview;
+      if (typeof forecastBtn !== 'undefined') forecastBtn.onclick = function(e){ e.stopPropagation(); const show = forecastMenu.style.display === 'block'; forecastMenu.style.display = show ? 'none' : 'block'; forecastMenu.setAttribute('aria-hidden', String(!show)); };
+      // If modal is open, update its title to the new language
+      if (modalBackdrop && modalBackdrop.style.display === 'flex') {
+        const currentModalTitle = document.getElementById('modalTitle');
+        if (currentModalTitle) currentModalTitle.innerText = t('controls.forecast');
+      }
+    } catch (e) { console.warn('rebind forecast handlers failed', e); }
   }
 });
 
@@ -824,7 +855,7 @@ districtSel.addEventListener('change', async () => {
 /* ---------- Analysis logic: irrigation, warnings, patterns ---------- */
 
 /* irrigation suggestions: simple rule-of-thumb based on crop water need, recent rain, humidity & temp */
-function irrigationRecommendation({temp, humidity, recentRain}, cropObj) {
+function irrigationRecommendation({temp, humidity, recentRain, ph}, cropObj) {
   const tval = Number(temp);
   const h = Number(humidity);
   const r = Number(recentRain);
@@ -832,6 +863,12 @@ function irrigationRecommendation({temp, humidity, recentRain}, cropObj) {
   let recs = [];
   let need = cropObj.water || 'Moderate';
   if (!Number.isNaN(r) && r > 30) recs.push(t('msg.recentHeavyRain'));
+
+  // pH-based quick advice
+  if (!Number.isNaN(ph)) {
+    if (ph < 5.5) recs.push(t('msg.phLow'));
+    else if (ph > 7.5) recs.push(t('msg.phHigh'));
+  }
 
   if (!Number.isNaN(tval) && !Number.isNaN(h) && tval > 32 && h < 50 && (Number.isNaN(r) || r < 5)) {
     recs.push(t('msg.hotDryIrrigate'));
@@ -992,15 +1029,16 @@ async function analyze() {
   const humidity = humidityEl.value ? Number(humidityEl.value) : NaN;
   const recentRain = recentRainEl.value ? Number(recentRainEl.value) : NaN;
   const wind = windEl.value ? Number(windEl.value) : NaN;
+  const ph = (phEl && phEl.value) ? Number(phEl.value) : NaN;
 
   // Build report text
   let txt = `${t('report.title')}\n${t('app.footer')}\n\n`;
   txt += `${t('controls.cropLabel')}: ${cropDisplay}\n${t('controls.stateLabel')}: ${state}${district ? ' / ' + district : ''}\n\n`;
   txt += `${t('controls.temp')}: ${tempVal}°C\nCompatibility: ${score}% (based on temp)\n\n`;
-  txt += `${t('controls.liveTitle')}: \n• ${t('controls.humidity')}: ${isNaN(humidity) ? 'N/A' : humidity + '%'}\n• ${t('controls.recentRain')}: ${isNaN(recentRain) ? 'N/A' : recentRain + ' mm'}\n• ${t('controls.wind')}: ${isNaN(wind) ? 'N/A' : wind + ' m/s'}\n\n`;
+  txt += `${t('controls.liveTitle')}: \n• ${t('controls.humidity')}: ${isNaN(humidity) ? 'N/A' : humidity + '%'}\n• ${t('controls.recentRain')}: ${isNaN(recentRain) ? 'N/A' : recentRain + ' mm'}\n• ${t('controls.wind')}: ${isNaN(wind) ? 'N/A' : wind + ' m/s'}\n• ${t('controls.ph')}: ${isNaN(ph) ? 'N/A' : ph}\n\n`;
 
   // irrigation recommendations
-  const irr = irrigationRecommendation({temp: tempVal, humidity, recentRain}, cropObj);
+  const irr = irrigationRecommendation({temp: tempVal, humidity, recentRain, ph}, cropObj);
   irrigationBox.innerHTML = `<div class="alert ok"><strong>${t('msg.irrigation') || 'Irrigation:'}</strong> ${irr[0]}</div>`;
   const irrHtml = '<div style="margin-top:8px"><strong>' + (t('msg.irrigationPlan') || 'Irrigation plan (tips):') + '</strong><ul style="margin:6px 0 0 18px;color:var(--muted)">' + irr.map(r=>`<li>${r}</li>`).join('') + '</ul></div>';
   irrigationBox.innerHTML += irrHtml;
@@ -1053,7 +1091,7 @@ async function analyze() {
   window._lastReport = {
     title: 'Crop Weather Advisor — Report',
     generatedAt: new Date().toLocaleString(),
-    state, district, crop: cropName, cropDisplay, temp: tempVal, humidity, recentRain, wind, score,
+    state, district, crop: cropName, cropDisplay, temp: tempVal, humidity, recentRain, wind, ph, score,
     irrigation: irr, warningsImmediate: immediateWarnings, warningsForecast: window._lastForecastDaily || [], text: txt
   };
 }
@@ -1138,7 +1176,7 @@ async function handleWeeklyOverview() {
 
 /* modal PDF export (uses html2canvas to render complex scripts) */
 modalPdf.addEventListener('click', async () => {
-  const raw = modalPdf.dataset.raw || '';
+  let raw = modalPdf.dataset.raw || '';
   const title = modalPdf.dataset.title || t('controls.forecast');
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({unit:'mm',format:'a4'});
@@ -1150,7 +1188,7 @@ modalPdf.addEventListener('click', async () => {
   tempDiv.style.color = '#000000';
   tempDiv.style.padding = '20px';
   tempDiv.style.fontFamily = "'Noto Sans Devanagari', 'Noto Sans Bengali', sans-serif";
-  tempDiv.innerHTML = `<h2 style="margin-top:0">${title}</h2><pre style="white-space:pre-wrap">${raw || t('msg.noData')}</pre>`;
+  tempDiv.innerHTML = `<h2 style="margin-top:0">${title}</h2><div>${t('controls.ph')}: ${raw && raw.includes('PH_PLACEHOLDER') ? raw.split('PH_PLACEHOLDER: ')[1].split('\n')[0] : 'N/A'}</div><pre style="white-space:pre-wrap">${raw || t('msg.noData')}</pre>`;
   document.body.appendChild(tempDiv);
 
   // use html2canvas to rasterize the div (preserves complex scripts) and then add to PDF as image
@@ -1187,7 +1225,7 @@ downloadReportBtn.addEventListener('click', async () => {
 document.getElementById('modalClose').addEventListener('click', closeModal);
 
 /* enter to analyze */
-['temp','humidity','recentRain','wind','crop','stateSelect','districtSelect'].forEach(id => {
+['temp','humidity','recentRain','wind','ph','crop','stateSelect','districtSelect'].forEach(id => {
   const el = document.getElementById(id);
   if (!el) return;
   el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); analyze(); }});
@@ -1202,7 +1240,7 @@ async function downloadReportPdf(rep) {
   tempDiv.style.color = '#000000';
   tempDiv.style.padding = '20px';
   tempDiv.style.fontFamily = "'Noto Sans Devanagari', 'Noto Sans Bengali', sans-serif";
-  tempDiv.innerHTML = `<h2 style="margin-top:0">${title}</h2><div>${t('msg.generated')}: ${rep.generatedAt}</div><div>${t('controls.stateLabel')}: ${rep.state}${rep.district ? ' / '+rep.district : ''}</div><hr>`;
+  tempDiv.innerHTML = `<h2 style="margin-top:0">${title}</h2><div>${t('msg.generated')}: ${rep.generatedAt}</div><div>${t('controls.stateLabel')}: ${rep.state}${rep.district ? ' / '+rep.district : ''}</div><div>${t('controls.ph')}: ${isNaN(rep.ph) ? 'N/A' : rep.ph}</div><hr>`;
   tempDiv.innerHTML += `<pre style="white-space:pre-wrap">${rep.text}</pre>`;
   document.body.appendChild(tempDiv);
 
@@ -1222,6 +1260,7 @@ async function downloadReportPdf(rep) {
 updateStaticTexts();
 renderDynamicTexts();
 </script>
+<div style="position:fixed;bottom:4px;width:100%;text-align:center;font-size:10px;opacity:0.35;pointer-events:none;">Multilingual support may have minor glitches.</div>
 </body>
 </html>
 
