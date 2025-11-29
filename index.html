@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Crop Weather Advisor — Weather-first Crop Guidance</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ---------- Theme & layout ---------- */
 :root{
@@ -127,67 +128,78 @@ code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,0.02);pa
   <!-- header -->
   <div class="header">
     <div class="logo">CWA</div>
-    <div>
-      <h1>Crop Weather Advisor</h1>
-      <p class="small">A savage little weather app that tells your crop what's up — and what you'll regret if you ignore it. (We don't mention the boring plumbing.)</p>
+    <div style="flex:1">
+      <h1 data-i18n="app.title">Crop Weather Advisor</h1>
+      <p class="small" data-i18n="app.tagline">A savage little weather app that tells your crop what's up — and what you'll regret if you ignore it. (We don't mention the boring plumbing.)</p>
+    </div>
+
+    <!-- language selector -->
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+      <label class="small" for="langSel" style="color:var(--muted);margin-bottom:4px" data-i18n="app.langLabel">Language</label>
+      <select id="langSel" style="padding:8px;border-radius:8px;background:var(--glass);color:var(--text);border:1px solid rgba(255,255,255,0.04)">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी (Hindi)</option>
+        <option value="bn">বাংলা (Bengali)</option>
+        <option value="as">অসমীয়া (Assamese)</option>
+      </select>
     </div>
   </div>
 
   <div class="grid">
     <!-- left: form & controls -->
     <section class="card card-controls" aria-labelledby="controlsTitle">
-      <h2 id="controlsTitle">Inputs & Quick Actions</h2>
+      <h2 id="controlsTitle" data-i18n="controls.title">Inputs & Quick Actions</h2>
 
       <div class="field">
-        <label>State</label>
-        <select id="stateSelect"><option value="">— Select State —</option></select>
+        <label data-i18n="controls.stateLabel">State</label>
+        <select id="stateSelect"><option value="">— <span data-i18n="controls.select">Select</span> —</option></select>
       </div>
 
       <div class="field">
-        <label>District</label>
-        <select id="districtSelect"><option value="">— Select District —</option></select>
+        <label data-i18n="controls.districtLabel">District</label>
+        <select id="districtSelect"><option value="">— <span data-i18n="controls.select">Select</span> —</option></select>
       </div>
 
       <hr style="opacity:0.06;border:none;height:1px;margin:10px 0;background:linear-gradient(90deg,transparent,#083a64,transparent)">
 
-      <h2 style="font-size:14px;margin-top:6px">Live Weather Readings (auto-fill)</h2>
+      <h2 style="font-size:14px;margin-top:6px" data-i18n="controls.liveTitle">Live Weather Readings (auto-fill)</h2>
 
-      <div class="field"><label>Temperature (°C)</label><input id="temp" type="number" step="0.1" placeholder="—" /></div>
+      <div class="field"><label data-i18n="controls.temp">Temperature (°C)</label><input id="temp" type="number" step="0.1" placeholder="—" /></div>
 
       <div class="row">
-        <div style="flex:1" class="field"><label>Humidity (%)</label><input id="humidity" type="number" step="0.1" placeholder="—" /></div>
-        <div style="flex:1" class="field"><label>Recent Rain (24h, mm)</label><input id="recentRain" type="number" step="0.1" placeholder="—" /></div>
+        <div style="flex:1" class="field"><label data-i18n="controls.humidity">Humidity (%)</label><input id="humidity" type="number" step="0.1" placeholder="—" /></div>
+        <div style="flex:1" class="field"><label data-i18n="controls.recentRain">Recent Rain (24h, mm)</label><input id="recentRain" type="number" step="0.1" placeholder="—" /></div>
       </div>
 
-      <div class="field"><label>Wind Speed (m/s)</label><input id="wind" type="number" step="0.1" placeholder="—" /></div>
+      <div class="field"><label data-i18n="controls.wind">Wind Speed (m/s)</label><input id="wind" type="number" step="0.1" placeholder="—" /></div>
 
       <hr style="opacity:0.06;border:none;height:1px;margin:10px 0;background:linear-gradient(90deg,transparent,#083a64,transparent)">
 
-      <div class="field"><label>Intended Crop</label><select id="crop"><option value="">— Select Crop —</option></select></div>
+      <div class="field"><label data-i18n="controls.cropLabel">Intended Crop</label><select id="crop"><option value="">— <span data-i18n="controls.select">Select</span> —</option></select></div>
 
       <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:8px">
         <div style="display:flex;gap:10px">
-          <button id="analyzeBtn" class="btn">Analyze</button>
-          <button id="downloadReportBtn" class="btn secondary">Export Report (PDF)</button>
+          <button id="analyzeBtn" class="btn" data-i18n="controls.analyze">Analyze</button>
+          <button id="downloadReportBtn" class="btn secondary" data-i18n="controls.export">Export Report (PDF)</button>
         </div>
 
         <div class="dropdown">
-          <button id="forecastBtn" class="btn secondary">Forecast ▾</button>
+          <button id="forecastBtn" class="btn secondary" data-i18n="controls.forecast">Forecast ▾</button>
           <div id="forecastMenu" class="dropdown-menu" role="menu" aria-hidden="true">
-            <button id="next3Btn">Next 3 Days</button>
-            <button id="next7Btn">Weekly Overview</button>
+            <button id="next3Btn" data-i18n="controls.next3">Next 3 Days</button>
+            <button id="next7Btn" data-i18n="controls.next7">Weekly Overview</button>
           </div>
         </div>
       </div>
 
-      <p class="small" style="margin-top:12px">Pick a district to auto-fill the live weather fields. Or type manual values if you prefer to live dangerously.</p>
+      <p class="small" style="margin-top:12px" data-i18n="controls.helper">Pick a district to auto-fill the live weather fields. Or type manual values if you prefer to live dangerously.</p>
     </section>
 
     <!-- right: results -->
     <aside class="card card-results" aria-labelledby="resultsTitle">
       <div class="report-top">
         <div class="left">
-          <h3 id="reportTitle">Weather-Centered Crop Report</h3>
+          <h3 id="reportTitle" data-i18n="report.title">Weather-Centered Crop Report</h3>
           <div class="small" id="reportSubtitle">Focus Crop: —</div>
         </div>
         <div class="right">
@@ -197,25 +209,25 @@ code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,0.02);pa
         </div>
       </div>
 
-      <div id="suggestionsArea" class="suggestions" style="margin-top:12px">Awaiting input…</div>
+      <div id="suggestionsArea" class="suggestions" style="margin-top:12px" data-i18n="report.awaiting">Awaiting input…</div>
 
       <div id="irrigationBox" style="margin-top:12px"></div>
 
       <div id="futureWarnings" style="margin-top:12px"></div>
 
       <div style="margin-top:12px">
-        <h4 style="margin:6px 0">Cropping Patterns & Rotation</h4>
-        <div id="croppingPatterns" class="small">No crop selected.</div>
+        <h4 style="margin:6px 0" data-i18n="report.patternsTitle">Cropping Patterns & Rotation</h4>
+        <div id="croppingPatterns" class="small" data-i18n="report.noCrop">No crop selected.</div>
       </div>
 
       <div style="margin-top:12px">
-        <h4 style="margin:6px 0">Top alternative crops</h4>
+        <h4 style="margin:6px 0" data-i18n="report.altTitle">Top alternative crops</h4>
         <div id="altCrops" class="alt-crops" aria-live="polite"></div>
       </div>
     </aside>
   </div>
 
-  <footer style="text-align:center;margin-top:18px;color:var(--muted);font-size:13px">Crop Weather Advisor • We tell it straight so your plants don’t revolt.</footer>
+  <footer style="text-align:center;margin-top:18px;color:var(--muted);font-size:13px" data-i18n="app.footer">Crop Weather Advisor • We tell it straight so your plants don’t revolt.</footer>
 </div>
 
 <!-- Forecast modal -->
@@ -224,14 +236,15 @@ code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,0.02);pa
     <h3 id="modalTitle">Forecast</h3>
     <div id="modalContent" style="margin-top:10px"></div>
     <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:12px">
-      <button id="modalClose" class="btn secondary">Close</button>
-      <button id="modalPdf" class="btn">Download PDF</button>
+      <button id="modalClose" class="btn secondary" data-i18n="modal.close">Close</button>
+      <button id="modalPdf" class="btn" data-i18n="modal.pdf">Download PDF</button>
     </div>
   </div>
 </div>
 
-<!-- jsPDF -->
+<!-- jsPDF + html2canvas (for PDF rendering of complex scripts) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 /* ========= Data (kept small & editable) ========= */
@@ -278,7 +291,313 @@ const CROPS = [
 
 const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1/forecast';
 
+/* ========= TRANSLATIONS ========= */
+const TRANSLATIONS = {
+  en: {
+    'app.title': 'Crop Weather Advisor',
+    'app.tagline': "A small weather app that tells your crops what's happening — and what you'll regret later if you ignore it.",
+    'app.langLabel': 'Language',
+    'app.footer': 'Crop Weather Advisor • We tell it straight so your plants don’t revolt.',
+    'controls.title': 'Input and quick actions',
+    'controls.stateLabel': 'State',
+    'controls.districtLabel': 'District',
+    'controls.select': 'Select',
+    'controls.liveTitle': 'Live weather readings (auto-complete)',
+    'controls.temp': 'Temperature (°C)',
+    'controls.humidity': 'Humidity (%)',
+    'controls.recentRain': 'Recent rainfall (24 hours, mm)',
+    'controls.wind': 'Wind speed (m/s)',
+    'controls.cropLabel': 'Scheduled crop',
+    'controls.analyze': 'Analyze',
+    'controls.export': 'Report Export (PDF)',
+    'controls.forecast': 'Chronology ▾',
+    'controls.next3': 'Next 3 Days',
+    'controls.next7': 'Weekly Overview',
+    'controls.helper': 'Pick a district to auto-fill the live weather fields. Or type manual values if you prefer to live dangerously.',
+    'report.title': 'Weather-focused crop reports',
+    'report.awaiting': 'Waiting for input...',
+    'report.patternsTitle': 'Crop type & rotation',
+    'report.noCrop': 'No crops were selected.',
+    'report.altTitle': 'Top alternative crops',
+    'status.idle': 'Idle',
+    'status.fetching': 'Fetching weather…',
+    'status.updated': 'Weather updated',
+    'updated.no': 'No updates',
+    'modal.close': 'Close',
+    'modal.pdf': 'Download PDF',
+    'msg.selectState': 'Please select a State.',
+    'msg.selectDistrict': 'Please select a district to auto-fill weather (or enter values manually).',
+    'msg.selectCrop': 'Please select a crop.',
+    'msg.needTemp': 'Temperature is required (auto-fill by selecting district or enter manually).',
+    'msg.cropDataMissing': 'Crop data missing.',
+    'msg.awaitingManual': 'Waiting for input...',
+    'msg.recentHeavyRain': 'Significant recent rain — delay irrigation until field moisture stabilizes (1–3 days).',
+    'msg.hotDryIrrigate': 'High temperature + low humidity + little rain → schedule irrigation today (early morning or late evening).',
+    'msg.highWater': 'Crop requires high water: maintain consistent soil moisture; prefer 25–40 mm irrigation per irrigation event depending on growth stage.',
+    'msg.moderateWater': 'Moderate water need: top up moisture with 15–25 mm if no rain expected in next 3 days.',
+    'msg.lowWater': 'Low water need: avoid over-irrigation; 8–15 mm if prolonged drought conditions.',
+    'msg.irrigateTiming': 'Irrigate in early morning (preferred) or late evening — avoid mid-day to reduce evaporation and stress.',
+    'msg.whyThis': 'Why this crop?',
+    'msg.recommendations': 'Recommendations',
+    'msg.waterNeed': 'Water need',
+    'msg.suggestedRotation': 'Suggested rotation',
+    'msg.whenToPlant': 'When to plant',
+    'msg.followLocal': 'follow local advisories',
+    'msg.moreInfo': 'More info',
+    'msg.immediateWarnings': 'Immediate warnings:',
+    'msg.noImmediate': 'No immediate critical warnings based on provided inputs.',
+    'msg.forecastWarnings': 'Forecast warnings:',
+    'msg.noSevere': 'No severe forecast warnings for the next week.',
+    'msg.forecastUnavailable': 'Forecast unavailable for future warnings.',
+    'msg.recommendationsSummary': 'Recommendations (summary):',
+    'msg.notes': 'Notes:',
+    'msg.significantRain': 'Significant rain expected this week — postpone irrigation and watch for waterlogging.',
+    'msg.highAvgTemp': 'High average max temps — prioritize irrigation during early morning / evening; consider shade for sensitive crops.',
+    'msg.heavyRainDays': 'One or more heavy rain days expected — secure soil bunds and check drainage.',
+    'msg.noExtreme': 'No extreme conditions expected — follow normal irrigation schedule and monitor daily.',
+    'msg.summary': 'Summary',
+    'msg.avgMin': 'Avg Min',
+    'msg.avgMax': 'Avg Max',
+    'msg.totalRain': 'Total Rain',
+    'msg.warnings': 'Warnings',
+    'msg.dailyDetails': 'Daily details',
+    'msg.generated': 'Generated',
+    'msg.noData': 'No data',
+    'msg.runAnalysis': 'Run analysis first'
+  },
+  hi: {
+    'app.title': 'फ़सल मौसम सलाहकार',
+    'app.tagline': 'एक छोटा मौसम ऐप जो आपकी फसल को बताता है कि क्या हो रहा है — और आप जो अनदेखा करेंगे उसके बाद पछताएंगे।',
+    'app.langLabel': 'भाषा',
+    'app.footer': 'फ़सल मौसम सलाहकार • हम साफ बताते हैं ताकि आपकी फसल विद्रोह न करे।',
+    'controls.title': 'इनपुट और त्वरित क्रियाएँ',
+    'controls.stateLabel': 'राज्य',
+    'controls.districtLabel': 'ज़िला',
+    'controls.select': 'चुनें',
+    'controls.liveTitle': 'लाइव मौसम रीडिंग (ऑटो-फिल)',
+    'controls.temp': 'तापमान (°C)',
+    'controls.humidity': 'नमी (%)',
+    'controls.recentRain': 'हालिया बारिश (24 घंटे, मिमी)',
+    'controls.wind': 'वायु गति (m/s)',
+    'controls.cropLabel': 'निर्धारित फसल',
+    'controls.analyze': 'विश्लेषण करें',
+    'controls.export': 'रिपोर्ट निर्यात (PDF)',
+    'controls.forecast': 'कालबिग्रह ▾',
+    'controls.next3': 'अगले 3 दिन',
+    'controls.next7': 'साप्ताहिक अवलोकन',
+    'controls.helper': 'ऑटो-फिल के लिए ज़िला चुनें। या मैन्युअल मान दर्ज करें।',
+    'report.title': 'मौसम-केंद्रित फ़सल रिपोर्ट',
+    'report.awaiting': 'इनपुट का इंतजार…',
+    'report.patternsTitle': 'फ़सल प्रकार और रोटेशन',
+    'report.noCrop': 'कोई फ़सल चयनित नहीं।',
+    'report.altTitle': 'शीर्ष वैकल्पिक फसलें',
+    'status.idle': 'निष्क्रिय',
+    'status.fetching': 'मौसम लाया जा रहा है…',
+    'status.updated': 'मौसम अपडेट हो गया',
+    'updated.no': 'कोई अपडेट नहीं',
+    'modal.close': 'बंद करें',
+    'modal.pdf': 'PDF डाउनलोड करें',
+    'msg.selectState': 'कृपया एक राज्य चुनें।',
+    'msg.selectDistrict': 'कृपया मौसम ऑटो-फ़िल के लिए एक ज़िला चुनें (या मान मैन्युअल दर्ज करें)।',
+    'msg.selectCrop': 'कृपया एक फ़सल चुनें।',
+    'msg.needTemp': 'तापमान आवश्यक है (ज़िला चुनकर ऑटो-फिल या मैन्युअल दर्ज करें)।',
+    'msg.cropDataMissing': 'फ़सल डेटा अनुपलब्ध है।',
+    'msg.awaitingManual': 'इनपुट का इंतजार…',
+    'msg.recentHeavyRain': 'हाल की भारी बरसात — सिंचाई स्थिर होने तक (1–3 दिन) विलंब करें।',
+    'msg.hotDryIrrigate': 'उच्च तापमान + कम नमी + कम बारिश → आज सिंचाई निर्धारित करें (सुबह जल्दी या देर शाम)।',
+    'msg.highWater': 'फ़सल को अधिक पानी की आवश्यकता: सतत मिट्टी की नमी बनाए रखें; प्रयोग के आधार पर 25–40 मिमी सिंचाई करें।',
+    'msg.moderateWater': 'मध्यम जल आवश्यकता: यदि अगले 3 दिनों में बारिश नहीं है तो 15–25 मिमी पानी दें।',
+    'msg.lowWater': 'कम जल आवश्यकता: अत्यधिक सिंचाई से बचें; लंबी सूखे में 8–15 मिमी दें।',
+    'msg.irrigateTiming': 'सुबह के समय (प्राथमिक) या देर शाम को सिंचाई करें — मध्याह्न से बचें।',
+    'msg.whyThis': 'यह फसल क्यों?',
+    'msg.recommendations': 'सिफारिशें',
+    'msg.waterNeed': 'जल आवश्यकता',
+    'msg.suggestedRotation': 'सुझाया गया रोटेशन',
+    'msg.whenToPlant': 'कब रोपें',
+    'msg.followLocal': 'स्थानीय सलाह का पालन करें',
+    'msg.moreInfo': 'अधिक जानकारी',
+    'msg.immediateWarnings': 'तत्काल चेतावनियाँ:',
+    'msg.noImmediate': 'प्रदान किए गए इनपुट के अनुसार कोई तत्काल गंभीर चेतावनी नहीं।',
+    'msg.forecastWarnings': 'पूर्वानुमान चेतावनियाँ:',
+    'msg.noSevere': 'अगले सप्ताह के लिए कोई गंभीर चेतावनी नहीं।',
+    'msg.forecastUnavailable': 'भविष्य की चेतावनियों के लिए पूर्वानुमान उपलब्ध नहीं।',
+    'msg.recommendationsSummary': 'सिफारिशें (सारांश):',
+    'msg.notes': 'नोट्स:',
+    'msg.significantRain': 'इस सप्ताह महत्वपूर्ण मात्रा में बारिश की उम्मीद — सिंचाई स्थगित करें और जलभराव देखें।',
+    'msg.highAvgTemp': 'उच्च औसत अधिकतम तापमान — संवेदनशील फसलों के लिए छाया पर विचार करें।',
+    'msg.heavyRainDays': 'एक या अधिक भारी वर्षा वाले दिन अपेक्षित — मिट्टी की नालियाँ और बांध सुरक्षित करें।',
+    'msg.noExtreme': 'कोई कठिन स्थिति नहीं — सामान्य सिंचाई अनुसूची का पालन करें।',
+    'msg.summary': 'सारांश',
+    'msg.avgMin': 'औसत न्यूनतम',
+    'msg.avgMax': 'औसत अधिकतम',
+    'msg.totalRain': 'कुल वर्षा',
+    'msg.warnings': 'चेतावनियाँ',
+    'msg.dailyDetails': 'दैनिक विवरण',
+    'msg.generated': 'निर्मित',
+    'msg.noData': 'कोई डेटा नहीं',
+    'msg.runAnalysis': 'पहले विश्लेषण चलाएँ'
+  },
+  bn: {
+    'app.title': 'ফসল আবহাওয়া উপদেষ্টা',
+    'app.tagline': 'একটি ছোট আবহাওয়া অ্যাপ যা আপনার ফসলকে বলে কি হচ্ছে — এবং আপনি যা উপেক্ষা করলে পরে আফসোস করবেন।',
+    'app.langLabel': 'ভাষা',
+    'app.footer': 'ফসল আবহাওয়া উপদেষ্টা • আমরা সোজা বলি যাতে আপনার গাছ বিদ্রোহ না করে।',
+    'controls.title': 'ইনপুট ও দ্রুত ক্রিয়া',
+    'controls.stateLabel': 'রাজ্য',
+    'controls.districtLabel': 'জেলা',
+    'controls.select': 'বেছে নিন',
+    'controls.liveTitle': 'লাইভ আবহাওয়া রিডিং (স্বয়ং-পূর্ণ)',
+    'controls.temp': 'তাপমাত্রা (°C)',
+    'controls.humidity': 'আর্দ্রতা (%)',
+    'controls.recentRain': 'সাম্প্রতিক বৃষ্টি (24 ঘন্টা, মিমি)',
+    'controls.wind': 'বায়ু গতি (m/s)',
+    'controls.cropLabel': 'নির্ধারিত ফসল',
+    'controls.analyze': 'বিশ্লেষণ করুন',
+    'controls.export': 'রিপোর্ট এক্সপোর্ট (PDF)',
+    'controls.forecast': 'কালক্ষেপ ▾',
+    'controls.next3': 'পরবর্তী ৩ দিন',
+    'controls.next7': 'সাপ্তাহিক সারসংক্ষেপ',
+    'controls.helper': 'অটো-ফিল করার জন্য একটি জেলা নির্বাচন করুন। অথবা ম্যানুয়ালি মান লিখুন।',
+    'report.title': 'আবহাওয়া-কেন্দ্রিক ফসল রিপোর্ট',
+    'report.awaiting': 'ইনপুটের অপেক্ষা…',
+    'report.patternsTitle': 'ফসল ধরন ও রোটেশন',
+    'report.noCrop': 'কোন ফসল নির্বাচিত হয়নি।',
+    'report.altTitle': 'শীর্ষ বিকল্প ফসল',
+    'status.idle': 'বিরত',
+    'status.fetching': 'আবহাওয়া আনছি…',
+    'status.updated': 'আবহাওয়া আপডেট হয়েছে',
+    'updated.no': 'কোনও আপডেট নেই',
+    'modal.close': 'বন্ধ করুন',
+    'modal.pdf': 'PDF ডাউনলোড',
+    'msg.selectState': 'অনুগ্রহ করে একটি রাজ্য নির্বাচন করুন।',
+    'msg.selectDistrict': 'আবহাওয়া স্বয়ং-পূর্ণ করার জন্য একটি জেলা নির্বাচন করুন (অথবা মান ম্যানুয়ালি লিখুন)।',
+    'msg.selectCrop': 'অনুগ্রহ করে একটি ফসল নির্বাচন করুন।',
+    'msg.needTemp': 'তাপমাত্রা দরকার (জেলা নির্বাচন করে স্বয়ং-পূর্ণ বা ম্যানুয়ালি লিখুন)।',
+    'msg.cropDataMissing': 'ফসলের তথ্য অনুপস্থিত।',
+    'msg.awaitingManual': 'ইনপুট প্রতীক্ষা…',
+    'msg.recentHeavyRain': 'সাম্প্রতিক ভারী বৃষ্টি — ১–৩ দিন পর্যন্ত সেচ স্থগিত রাখুন।',
+    'msg.hotDryIrrigate': 'উচ্চ তাপ + কম আর্দ্রতা + কম বৃষ্টি → আজ সেচ প্রয়োজন (সকাল বা সন্ধ্যায়)।',
+    'msg.highWater': 'ফসলের উচ্চ জল প্রয়োজন: মাটি আর্দ্রতা বজায় রাখুন; 25–40 মিমি সেচ করুন।',
+    'msg.moderateWater': 'মধ্যম জল প্রয়োজন: যদি ৩ দিনের মধ্যে বৃষ্টি না হয়, 15–25 মিমি দিন।',
+    'msg.lowWater': 'কম জল প্রয়োজন: অতিরিক্ত সেচ এড়ান; দীর্ঘ শুষ্কতা হলে 8–15 মিমি দিন।',
+    'msg.irrigateTiming': 'সেরা সময়: সকালে বা সন্ধ্যায় সেচ করুন — দুপুরে এড়িয়ে চলুন।',
+    'msg.whyThis': 'এই ফসল কেন?',
+    'msg.recommendations': 'সুপারিশ',
+    'msg.waterNeed': 'জল প্রয়োজন',
+    'msg.suggestedRotation': 'নির্ধারিত রোটেশন',
+    'msg.whenToPlant': 'কখন লাগাবেন',
+    'msg.followLocal': 'স্থানীয় পরামর্শ মেনে চলুন',
+    'msg.moreInfo': 'আরও তথ্য',
+    'msg.immediateWarnings': 'তাৎক্ষণিক সতর্কতা:',
+    'msg.noImmediate': 'প্রদত্ত ইনপুট অনুযায়ী কোন তাৎক্ষণিক গুরুতর সতর্কতা নেই।',
+    'msg.forecastWarnings': 'পূর্বাভাস সতর্কতা:',
+    'msg.noSevere': 'পরবর্তী সপ্তাহে কোন মারাত্মক সতর্কতা নেই।',
+    'msg.forecastUnavailable': 'ভবিষ্যৎ সতর্কতার জন্য পূর্বাভাস পাওয়া যায়নি।',
+    'msg.recommendationsSummary': 'সুপারিশ (সারমর্ম):',
+    'msg.notes': 'নোট:',
+    'msg.significantRain': 'এই সপ্তাহে উল্লেখযোগ্য বৃষ্টি প্রত্যাশিত — সেচ স্থগিত করুন এবং জলীয় জমি পরীক্ষা করুন।',
+    'msg.highAvgTemp': 'গড় সর্বোচ্চ তাপমাত্রা বেশি — সংবেদনশীল ফসলের জন্য ছায়া বিবেচনা করুন।',
+    'msg.heavyRainDays': 'এক বা একাধিক ভারী বৃষ্টি দিন আসতে পারে — মাঠের বান্ড ও জলসরবরাহ ঠিক আছে কিনা দেখুন।',
+    'msg.noExtreme': 'কোনো চরম অবস্থা আশা করা হচ্ছে না — নিয়মিত সেচ বজায় রাখুন।',
+    'msg.summary': 'সারাংশ',
+    'msg.avgMin': 'গড় ন্যূনতম',
+    'msg.avgMax': 'গড় সর্বোচ্চ',
+    'msg.totalRain': 'মোট বৃষ্টি',
+    'msg.warnings': 'সতর্কতা',
+    'msg.dailyDetails': 'দৈনিক বিবরণ',
+    'msg.generated': 'উত্পন্ন',
+    'msg.noData': 'কোন তথ্য নেই',
+    'msg.runAnalysis': 'প্রথমে বিশ্লেষণ চালান'
+  },
+  as: {
+    'app.title': 'ফচল বতৰত উপদেষ্ট',
+    'app.tagline': 'এটা সৰু বতৰৰ এপ যে আপোনাৰ ফচলক কয় কি ঘটিছে — আৰু আপুনি যদি উপেক্ষা কৰে তেন্তে পাছত অনুশোচনা কৰিব।',
+    'app.langLabel': 'ভাষা',
+    'app.footer': 'ফচল বতৰত উপদেষ্ট • আমি সিধা কওঁ যাতে আপোনাৰ গছবিলাকে বিদ্ৰোহ নকৰে।',
+    'controls.title': 'ইনপুট আৰু তৎপ্ৰৱুক্তি',
+    'controls.stateLabel': 'ৰাজ্য',
+    'controls.districtLabel': 'জিলা',
+    'controls.select': 'বাচনি কৰক',
+    'controls.liveTitle': 'লাইভ বতৰৰ পঢ়া (স্বয়ং-পূৰণ)',
+    'controls.temp': 'তাপমাত্ৰা (°C)',
+    'controls.humidity': 'আর্দ্ৰতা (%)',
+    'controls.recentRain': 'সাম্প্ৰতিক বৰষুণ (২৪ঘণ্টা, মিমি)',
+    'controls.wind': 'বতৰৰ গতি (m/s)',
+    'controls.cropLabel': 'নির্ধাৰিত ফচল',
+    'controls.analyze': 'বিশ্লেষণ কৰক',
+    'controls.export': 'ৰিপোৰ্ট এক্সপোৰ্ট (PDF)',
+    'controls.forecast': 'বতৰৰ কল্পনা ▾',
+    'controls.next3': 'পৰৱৰ্তী ৩ দিন',
+    'controls.next7': 'সাপ্তাহিক পৰ্যালোচনা',
+    'controls.helper': 'স্বয়ং-পূৰণৰ বাবে এটা জিলা বাচনি কৰক। অথবা মেনুৱেল মান দিব।',
+    'report.title': 'বতৰত-কেন্দ্ৰিক ফচল ৰিপোৰ্ট',
+    'report.awaiting': 'ইনপুটৰ অপেক্ষা…',
+    'report.patternsTitle': 'ফচল নকশা আৰু পৰিবৰ্তন',
+    'report.noCrop': 'কোনো ফচল নিৰ্বাচিত হোৱা নাই।',
+    'report.altTitle': 'শীৰ্ষ বিকল্প ফচল',
+    'status.idle': 'নিষ্ক্ৰিয়',
+    'status.fetching': 'বতৰৰ তথ্য আহি আছে…',
+    'status.updated': 'বতৰৰ তথ্য আপডেট হৈছে',
+    'updated.no': 'এতিয়াও আপডেট নোহোৱা',
+    'modal.close': 'বন্ধ কৰক',
+    'modal.pdf': 'PDF ডাউনলোড কৰক',
+    'msg.selectState': 'অনুগ্ৰহ কৰি এটা ৰাজ্য বাচনি কৰক।',
+    'msg.selectDistrict': 'স্বয়ং-পূৰণৰ বাবে অনুগ্ৰহ কৰি এটা জিলা বাচনি কৰক (অথবা মান মেনুৱেল লিখক)।',
+    'msg.selectCrop': 'অনুগ্ৰহ কৰি এটা ফচল বাচনি কৰক।',
+    'msg.needTemp': 'তাপমাত্ৰা প্ৰয়োজন (জিলা বাচনি কৰি স্বয়ং-পূৰণ বা মেনুৱেল লিখক)।',
+    'msg.cropDataMissing': 'ফচল ডাটা অনুপস্থিত।',
+    'msg.awaitingManual': 'ইনপুটৰ অপেক্ষা…',
+    'msg.recentHeavyRain': 'সাম্প্ৰতিক তীব্ৰ বৰষুণ — ১–৩ দিন সেচ ৰখা নকৰিব।',
+    'msg.hotDryIrrigate': 'উচ্চ তাপ + কম আর্দ্ৰতা + কম বৰষুণ → আজি সেচ কৰক (সকাল বা সন্ধিয়া)।',
+    'msg.highWater': 'ফচলৰ উচ্চ পানীয় প্ৰয়োজন: মাটি ভিজাই ৰাখক; 25–40 মিমি সেচ কৰক।',
+    'msg.moderateWater': 'মধ্যম পানীয় প্ৰয়োজন: ৩ দিনত বৰষুণ নাযায়লে 15–25 মিমি দিয়ক।',
+    'msg.lowWater': 'কম পানীয় প্ৰয়োজন: অধিক সেচ এৰিব; দীঘল শোকত 8–15 মিমি দিয়ক।',
+    'msg.irrigateTiming': 'সকলোতকৈ ভাল সময়: পুৱা বা সন্ধিয়া সেচ কৰক — মধ্যাহ্ন এৰক।',
+    'msg.whyThis': 'কিয় এই ফচল?',
+    'msg.recommendations': 'সুপাৰিশ',
+    'msg.waterNeed': 'পানীয় প্ৰয়োজন',
+    'msg.suggestedRotation': 'সুপাৰিশ কৰা ৰোটেচন',
+    'msg.whenToPlant': 'কেতিয়া ৰোপণ কৰিব',
+    'msg.followLocal': 'স্থানীয় পৰামৰ্শ অনুসৰণ কৰক',
+    'msg.moreInfo': 'অধিক তথ্য',
+    'msg.immediateWarnings': 'তাত্|ক্ষনিক সতর্কতা:',
+    'msg.noImmediate': 'দিয়া ইনপুট অনুসৰি কোনো তাত্|ক্ষনিক গম্ভীৰ সতর্কতা নাই।',
+    'msg.forecastWarnings': 'পূৰ্বাভাস সতর্কতা:',
+    'msg.noSevere': 'পৰৱৰ্তী সপ্তাহৰ বাবে কোনো গম্ভীৰ সতর্কতা নাই।',
+    'msg.forecastUnavailable': 'ভৱিষ্যৎ সতর্কতাৰ বাবে পূৰ্বাভাস উপলব্ধ নহয়।',
+    'msg.recommendationsSummary': 'সুপাৰিশ (সাৰাংশ):',
+    'msg.notes': 'নোট:',
+    'msg.significantRain': 'এই সপ্তাহত গুৰুত্বপূৰ্ণ বৰষুণৰ সম্ভাৱনা — সেচ স্থগিত কৰক আৰু জলাবদ্ধতা পৰীক্ষা কৰক।',
+    'msg.highAvgTemp': 'উচ্চ গড় তাপ — সংবেদনশীল ফচলৰ ক্ষেত্ৰত ছাঁ বিবেচনা কৰক।',
+    'msg.heavyRainDays': 'এটি বা ততোধিক তীব্ৰ বৰষুণৰ দিন সম্ভাৱ্য — মাটিৰ বেড়া আৰু নালীৰ নিৰীক্ষণ কৰক।',
+    'msg.noExtreme': 'কোনো চরম অৱস্থা আশা কৰা নাই — সাধাৰণ সেচ বজাই ৰাখক।',
+    'msg.summary': 'সাৰাংশ',
+    'msg.avgMin': 'গড় ন্যূনতম',
+    'msg.avgMax': 'গড় সর্বোচ্চ',
+    'msg.totalRain': 'সৰ্বমুঠ বৰষুণ',
+    'msg.warnings': 'সতর্কতা',
+    'msg.dailyDetails': 'দৈনিক বিৱৰণ',
+    'msg.generated': 'উৎপন্ন',
+    'msg.noData': 'কোনো ডাটা নাই',
+    'msg.runAnalysis': 'প্ৰথমে বিশ্লেষণ চলাও'
+  }
+};
+
+/* --- LOCALIZED NAMES FOR CROPS (UI display only) --- */
+const CROP_LOCALIZED_NAMES = {
+  en: {Paddy:'Paddy',Wheat:'Wheat',Maize:'Maize',Potato:'Potato',Sugarcane:'Sugarcane',Tea:'Tea',Groundnut:'Groundnut',Mustard:'Mustard',Soybean:'Soybean',Barley:'Barley'},
+  bn: {Paddy:'ধান',Wheat:'গম',Maize:'মকাই',Potato:'আলু',Sugarcane:'ইউকু',Tea:'চা',Groundnut:'বাদাম',Mustard:'সরিষা',Soybean:'সয়াবিন',Barley:'যব'},
+  hi: {Paddy:'धान',Wheat:'गेहूँ',Maize:'मकई',Potato:'आलू',Sugarcane:'गन्ना',Tea:'चाय',Groundnut:'मूंगफली',Mustard:'सरसों',Soybean:'सोयाबीन',Barley:'जौ'},
+  as: {Paddy:'ধান',Wheat:'গম',Maize:'ভুট্টা',Potato:'আলু',Sugarcane:'গন্\u200dনা',Tea:'চাহ',Groundnut:'বাদাম',Mustard:'সরিষা',Soybean:'চিনা সয়া',Barley:'যব'}
+};
+
+function localizeCropName(engName) {
+  const lang = windowLang || 'en';
+  return (CROP_LOCALIZED_NAMES[lang] && CROP_LOCALIZED_NAMES[lang][engName]) || engName;
+}
+
 /* ========= DOM refs ========= */
+const langSel = document.getElementById('langSel');
 const stateSel = document.getElementById('stateSelect');
 const districtSel = document.getElementById('districtSelect');
 const cropSel = document.getElementById('crop');
@@ -309,22 +628,87 @@ const modalContent = document.getElementById('modalContent');
 const modalClose = document.getElementById('modalClose');
 const modalPdf = document.getElementById('modalPdf');
 
+let windowLang = localStorage.getItem('cwa_lang') || 'en';
+let currentWeatherController = null;
+
+/* ---------- i18n helpers ---------- */
+function t(key) {
+  const lang = windowLang || 'en';
+  return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || (TRANSLATIONS['en'][key] || key);
+}
+
+function updateStaticTexts() {
+  // find all elements with data-i18n and set textContent
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (!k) return;
+    // If element has children like <option>— <span data-i18n> —</span></option> we won't replace outer
+    if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') return;
+    el.textContent = t(k);
+  });
+  // update status badge text
+  statusBadge.textContent = t('status.idle');
+  updatedAt.textContent = t('updated.no');
+  document.documentElement.lang = windowLang;
+}
+
+langSel.value = windowLang;
+langSel.addEventListener('change', () => {
+  windowLang = langSel.value;
+  localStorage.setItem('cwa_lang', windowLang);
+
+  // rebuild selects (so placeholders and crop labels update)
+  initSelects();
+
+  // re-render static & dynamic texts
+  updateStaticTexts();
+  renderDynamicTexts();
+
+  // if a report exists, re-render parts that show localized crop names & alt crops
+  if (window._lastReport) {
+    // Update subtitle to localized crop name
+    reportSubtitle.innerText = `${t('report.title')}: ${localizeCropName(window._lastReport.crop)}`;
+    // re-render alternate crops with same temp/crop
+    renderAlternateCrops(window._lastReport.temp, window._lastReport.crop);
+  }
+});
+
+/* helper to set text nodes used dynamically */
+function renderDynamicTexts() {
+  // suggestions placeholder
+  if (!window._lastReport) suggestionsArea.textContent = t('report.awaiting');
+}
+
 /* ---------- Init selects ---------- */
 function initSelects(){
-  stateSel.innerHTML = '<option value="">— Select State —</option>';
+  stateSel.innerHTML = '<option value="">' + '— ' + t('controls.select') + ' —' + '</option>';
   STATES.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; stateSel.appendChild(o); });
-  districtSel.innerHTML = '<option value="">— Select District —</option>';
+  districtSel.innerHTML = '<option value="">' + '— ' + t('controls.select') + ' —' + '</option>';
   districtSel.style.display = 'block';
-  cropSel.innerHTML = '<option value="">— Select Crop —</option>';
-  CROPS.forEach(c => { const o=document.createElement('option'); o.value=c.name; o.textContent=c.name; cropSel.appendChild(o); });
+  cropSel.innerHTML = '<option value="">' + '— ' + t('controls.select') + ' —' + '</option>';
+  CROPS.forEach(c => { const o=document.createElement('option'); o.value=c.name; o.textContent = localizeCropName(c.name); cropSel.appendChild(o); });
 }
-initSelects();
+
+// initialize once DOM is ready so we don't race with markup creation
+document.addEventListener('DOMContentLoaded', () => {
+  // make selects first (they use translated placeholders)
+  initSelects();
+
+  // set language UI control (if stored)
+  langSel.value = windowLang;
+
+  // apply translations to all data-i18n elements
+  updateStaticTexts();
+
+  // initial dynamic text render
+  renderDynamicTexts();
+});
 
 /* When a state is selected, populate districtSelect from DISTRICTS[state] if available.
    Otherwise hide the district control (user can enter manual weather). */
 stateSel.addEventListener('change', () => {
   const s = stateSel.value;
-  districtSel.innerHTML = '<option value="">— Select District —</option>';
+  districtSel.innerHTML = '<option value="">' + '— ' + t('controls.select') + ' —' + '</option>';
   if (s && DISTRICTS[s] && DISTRICTS[s].length) {
     DISTRICTS[s].forEach(d => {
       const o = document.createElement('option');
@@ -342,12 +726,13 @@ stateSel.addEventListener('change', () => {
 });
 
 /* ---------- Helpers: fetch JSON ---------- */
-async function safeFetch(url) {
+async function safeFetch(url, opts={}) {
   try {
-    const r = await fetch(url);
+    const r = await fetch(url, opts);
     if (!r.ok) return null;
     return await r.json();
   } catch (e) {
+    if (e.name === 'AbortError') return null;
     console.warn('fetch error', e);
     return null;
   }
@@ -356,7 +741,7 @@ async function safeFetch(url) {
 /* ---------- Auto-fill weather using Open-Meteo ----------
    Requests current_weather + hourly relativehumidity_2m & precipitation for last 24h */
 async function fetchAndFillWeatherForCoords(lat, lon) {
-  statusBadge.textContent = 'Fetching weather…';
+  statusBadge.textContent = t('status.fetching');
   statusBadge.style.background = 'transparent';
 
   const now = new Date();
@@ -373,9 +758,13 @@ async function fetchAndFillWeatherForCoords(lat, lon) {
     end_date: endDate
   });
   const url = `${OPEN_METEO_BASE}?${params.toString()}`;
-  const json = await safeFetch(url);
+
+  // abort previous
+  if (currentWeatherController) currentWeatherController.abort();
+  currentWeatherController = new AbortController();
+  const json = await safeFetch(url, { signal: currentWeatherController.signal });
   if (!json) {
-    statusBadge.textContent = 'Weather fetch failed';
+    statusBadge.textContent = t('status.idle');
     statusBadge.style.color = 'var(--alert)';
     return;
   }
@@ -412,9 +801,9 @@ async function fetchAndFillWeatherForCoords(lat, lon) {
   if (humidity !== null) humidityEl.value = Math.round(Number(humidity));
   recentRainEl.value = Math.round((precip24 + Number.EPSILON) * 10) / 10;
 
-  statusBadge.textContent = 'Weather updated';
+  statusBadge.textContent = t('status.updated');
   statusBadge.style.color = 'var(--muted)';
-  updatedAt.innerText = 'Updated: ' + new Date().toLocaleString();
+  updatedAt.innerText = t('updated.no') + ' ' + new Date().toLocaleString();
 }
 
 /* auto-fetch when district selected */
@@ -423,7 +812,7 @@ districtSel.addEventListener('change', async () => {
   if (!d) return;
   const coords = DISTRICT_COORDS[d];
   if (!coords) {
-    statusBadge.textContent = 'No coords';
+    statusBadge.textContent = t('status.idle');
     statusBadge.style.color = 'var(--alert)';
     return;
   }
@@ -436,27 +825,27 @@ districtSel.addEventListener('change', async () => {
 
 /* irrigation suggestions: simple rule-of-thumb based on crop water need, recent rain, humidity & temp */
 function irrigationRecommendation({temp, humidity, recentRain}, cropObj) {
-  const t = Number(temp);
+  const tval = Number(temp);
   const h = Number(humidity);
   const r = Number(recentRain);
 
   let recs = [];
   let need = cropObj.water || 'Moderate';
-  if (!Number.isNaN(r) && r > 30) recs.push('Significant recent rain — delay irrigation until field moisture stabilizes (1–3 days).');
+  if (!Number.isNaN(r) && r > 30) recs.push(t('msg.recentHeavyRain'));
 
-  if (!Number.isNaN(t) && !Number.isNaN(h) && t > 32 && h < 50 && (Number.isNaN(r) || r < 5)) {
-    recs.push('High temperature + low humidity + little rain → schedule irrigation today (early morning or late evening).');
+  if (!Number.isNaN(tval) && !Number.isNaN(h) && tval > 32 && h < 50 && (Number.isNaN(r) || r < 5)) {
+    recs.push(t('msg.hotDryIrrigate'));
   }
 
   if (need === 'High') {
-    recs.push('Crop requires high water: maintain consistent soil moisture; prefer 25–40 mm irrigation per irrigation event depending on growth stage.');
+    recs.push(t('msg.highWater'));
   } else if (need === 'Moderate') {
-    recs.push('Moderate water need: top up moisture with 15–25 mm if no rain expected in next 3 days.');
+    recs.push(t('msg.moderateWater'));
   } else {
-    recs.push('Low water need: avoid over-irrigation; 8–15 mm if prolonged drought conditions.');
+    recs.push(t('msg.lowWater'));
   }
 
-  recs.push('Irrigate in early morning (preferred) or late evening — avoid mid-day to reduce evaporation and stress.');
+  recs.push(t('msg.irrigateTiming'));
 
   return recs;
 }
@@ -464,15 +853,15 @@ function irrigationRecommendation({temp, humidity, recentRain}, cropObj) {
 /* cropping patterns information: returns pattern string for crop */
 function croppingPatternForCrop(crop) {
   const c = CROPS.find(x => x.name === crop);
-  if (!c) return 'No cropping pattern data.';
-  return `Typical pattern: ${c.pattern}\nWater requirement: ${c.water}\nNote: ${c.info}`;
+  if (!c) return t('report.noCrop');
+  return `${t('report.patternsTitle')}: ${c.pattern}\n${t('msg.waterNeed')}: ${c.water}\n${t('msg.notes') || 'Note'}: ${c.info}`;
 }
 
 /* future warnings derived from forecast data (simple heuristics) */
 function warningsFromForecast(dailyArray) {
   const warnings = [];
   const heavy = dailyArray.filter(d => (d.rain ?? 0) >= 40);
-  if (heavy.length) warnings.push(`Heavy rainfall expected on ${heavy.map(h=>h.date).join(', ')} — waterlogging & runoff risk.`);
+  if (heavy.length) warnings.push(`${t('msg.significantRain')} ${heavy.map(h=>h.date).join(', ')}`);
 
   let consecHeat = 0, heatStart = null;
   for (const d of dailyArray) {
@@ -480,11 +869,11 @@ function warningsFromForecast(dailyArray) {
       consecHeat++;
       if (heatStart === null) heatStart = d.date;
     } else {
-      if (consecHeat >= 3) warnings.push(`Heatwave alert (${heatStart} for ${consecHeat} days) — irrigation and shade recommended.`);
+      if (consecHeat >= 3) warnings.push(`${t('msg.highAvgTemp')} (${heatStart} for ${consecHeat} days)`);
       consecHeat = 0; heatStart = null;
     }
   }
-  if (consecHeat >= 3) warnings.push(`Heatwave alert (${heatStart} for ${consecHeat} days) — irrigation and shade recommended.`);
+  if (consecHeat >= 3) warnings.push(`${t('msg.highAvgTemp')} (${heatStart} for ${consecHeat} days)`);
 
   let dryCount = 0, dryStart = null;
   for (const d of dailyArray) {
@@ -492,14 +881,14 @@ function warningsFromForecast(dailyArray) {
       dryCount++;
       if (!dryStart) dryStart = d.date;
     } else {
-      if (dryCount >= 7) warnings.push(`Dry spell predicted starting ${dryStart} for ${dryCount} days — adjust irrigation plan.`);
+      if (dryCount >= 7) warnings.push(`${t('msg.noExtreme')} starting ${dryStart} for ${dryCount} days`);
       dryCount = 0; dryStart = null;
     }
   }
-  if (dryCount >= 7) warnings.push(`Dry spell predicted starting ${dryStart} for ${dryCount} days — adjust irrigation plan.`);
+  if (dryCount >= 7) warnings.push(`${t('msg.noExtreme')} starting ${dryStart} for ${dryCount} days`);
 
   const windy = dailyArray.filter(d => (d.wind ?? 0) >= 12);
-  if (windy.length) warnings.push(`Strong winds forecast on ${windy.map(w=>w.date).join(', ')} — secure plastic mulch and postpone spraying.`);
+  if (windy.length) warnings.push(`${t('msg.warnings')} on ${windy.map(w=>w.date).join(', ')}`);
 
   return warnings;
 }
@@ -531,19 +920,20 @@ function renderAlternateCrops(temp, focusCrop) {
     const card = document.createElement('div');
     card.className = 'crop-card';
     const uid = 'c_' + c.name.replace(/\s+/g, '_');
+    const displayName = localizeCropName(c.name);
     card.innerHTML = `
       <div class="label">
-        <div><strong>${c.name}</strong><div class="small" style="color:var(--muted)">${c.info}</div></div>
+        <div><strong>${displayName}</strong><div class="small" style="color:var(--muted)">${c.info}</div></div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
           <div class="small" style="color:var(--muted)">${c.score}%</div>
-          <button aria-controls="info-${uid}" aria-expanded="false" id="btn-${uid}" class="info-btn" title="More info about ${c.name}">i</button>
+          <button aria-controls="info-${uid}" aria-expanded="false" id="btn-${uid}" class="info-btn" title="${t('msg.moreInfo') || 'More info'}: ${displayName}">i</button>
         </div>
       </div>
       <div id="info-${uid}" class="info-panel" role="region" aria-hidden="true">
-        <div style="font-weight:700;margin-bottom:6px">Why this crop?</div>
+        <div style="font-weight:700;margin-bottom:6px">${t('msg.whyThis') || 'Why this crop?'}</div>
         <div>${c.info}</div>
-        <div style="margin-top:8px;font-weight:700">Recommendations</div>
-        <div class="small">• Water need: ${c.water}<br>• Suggested rotation: ${c.pattern}<br>• When to plant: follow local advisories.</div>
+        <div style="margin-top:8px;font-weight:700">${t('msg.recommendations') || 'Recommendations'}</div>
+        <div class="small">• ${t('msg.waterNeed') || 'Water need'}: ${c.water}<br>• ${t('msg.suggestedRotation') || 'Suggested rotation'}: ${c.pattern}<br>• ${t('msg.whenToPlant') || 'When to plant'}: ${t('msg.followLocal') || 'follow local advisories'}.</div>
       </div>
     `;
     altCropsEl.appendChild(card);
@@ -580,16 +970,23 @@ async function analyze() {
   const cropName = cropSel.value;
   const tempVal = Number(tempEl.value);
 
-  if (!state) { suggestionsArea.innerText = 'Please select a State.'; return; }
-  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = 'Please select a district to auto-fill weather (or enter values manually).'; return; }
-  if (!cropName) { suggestionsArea.innerText = 'Please select an intended crop.'; return; }
-  if (Number.isNaN(tempVal)) { suggestionsArea.innerText = 'Temperature is required (auto-fill by selecting district or enter manually).'; return; }
+  if (!state) { suggestionsArea.innerText = t('msg.selectState'); return; }
+  if (DISTRICTS[state] && DISTRICTS[state].length && !district) {
+    // allow manual analyze if user entered temperature manually
+    if (!tempEl.value) {
+      suggestionsArea.innerText = t('msg.selectDistrict');
+      return;
+    }
+  }
+  if (!cropName) { suggestionsArea.innerText = t('msg.selectCrop'); return; }
+  if (Number.isNaN(tempVal)) { suggestionsArea.innerText = t('msg.needTemp'); return; }
 
   const cropObj = CROPS.find(c => c.name === cropName);
-  if (!cropObj) { suggestionsArea.innerText = 'Crop data missing.'; return; }
+  if (!cropObj) { suggestionsArea.innerText = t('msg.cropDataMissing'); return; }
 
-  reportSubtitle.innerText = `Focus Crop: ${cropName}`;
-  reportTitle.innerText = 'Weather-Centered Crop Report';
+  const cropDisplay = localizeCropName(cropName);
+  reportSubtitle.innerText = `${t('report.title')}: ${cropDisplay}`;
+  reportTitle.innerText = t('report.title');
 
   const score = compatibilityScoreTemp(tempVal, cropObj);
   const humidity = humidityEl.value ? Number(humidityEl.value) : NaN;
@@ -597,26 +994,27 @@ async function analyze() {
   const wind = windEl.value ? Number(windEl.value) : NaN;
 
   // Build report text
-  let txt = `Crop: ${cropName}\nLocation: ${state}${district ? ' / ' + district : ''}\n\n`;
-  txt += `Observed Temperature: ${tempVal}°C\nCompatibility: ${score}% (based on temp)\n\n`;
-  txt += `Live weather inputs:\n• Humidity: ${isNaN(humidity) ? 'N/A' : humidity + '%'}\n• Recent rain (24h): ${isNaN(recentRain) ? 'N/A' : recentRain + ' mm'}\n• Wind: ${isNaN(wind) ? 'N/A' : wind + ' m/s'}\n\n`;
+  let txt = `${t('report.title')}\n${t('app.footer')}\n\n`;
+  txt += `${t('controls.cropLabel')}: ${cropDisplay}\n${t('controls.stateLabel')}: ${state}${district ? ' / ' + district : ''}\n\n`;
+  txt += `${t('controls.temp')}: ${tempVal}°C\nCompatibility: ${score}% (based on temp)\n\n`;
+  txt += `${t('controls.liveTitle')}: \n• ${t('controls.humidity')}: ${isNaN(humidity) ? 'N/A' : humidity + '%'}\n• ${t('controls.recentRain')}: ${isNaN(recentRain) ? 'N/A' : recentRain + ' mm'}\n• ${t('controls.wind')}: ${isNaN(wind) ? 'N/A' : wind + ' m/s'}\n\n`;
 
   // irrigation recommendations
   const irr = irrigationRecommendation({temp: tempVal, humidity, recentRain}, cropObj);
-  irrigationBox.innerHTML = `<div class="alert ok"><strong>Irrigation:</strong> ${irr[0]}</div>`; // highlight first line
-  const irrHtml = '<div style="margin-top:8px"><strong>Irrigation plan (tips):</strong><ul style="margin:6px 0 0 18px;color:var(--muted)">' + irr.map(r=>`<li>${r}</li>`).join('') + '</ul></div>';
+  irrigationBox.innerHTML = `<div class="alert ok"><strong>${t('msg.irrigation') || 'Irrigation:'}</strong> ${irr[0]}</div>`;
+  const irrHtml = '<div style="margin-top:8px"><strong>' + (t('msg.irrigationPlan') || 'Irrigation plan (tips):') + '</strong><ul style="margin:6px 0 0 18px;color:var(--muted)">' + irr.map(r=>`<li>${r}</li>`).join('') + '</ul></div>';
   irrigationBox.innerHTML += irrHtml;
 
   // warnings from immediate inputs
   const immediateWarnings = [];
-  if (!isNaN(humidity) && !isNaN(recentRain) && humidity > 85 && recentRain > 20) immediateWarnings.push('High disease risk (fungal/bacterial): consider protective sprays & field drainage.');
-  if (!isNaN(recentRain) && recentRain > 50) immediateWarnings.push('Very heavy recent rainfall — waterlogging likely; delay transplanting/sowing.');
-  if (!isNaN(wind) && wind > 10) immediateWarnings.push('Strong winds — secure mulches and postpone spraying.');
+  if (!isNaN(humidity) && !isNaN(recentRain) && humidity > 85 && recentRain > 20) immediateWarnings.push(t('msg.immediateWarnings') || 'High disease risk (fungal/bacterial): consider protective sprays & field drainage.');
+  if (!isNaN(recentRain) && recentRain > 50) immediateWarnings.push(t('msg.veryHeavyRain') || 'Very heavy recent rainfall — waterlogging likely; delay transplanting/sowing.');
+  if (!isNaN(wind) && wind > 10) immediateWarnings.push(t('msg.strongWinds') || 'Strong winds — secure mulches and postpone spraying.');
 
   if (immediateWarnings.length) {
-    futureWarnings.innerHTML = '<div class="alert warn"><strong>Immediate warnings:</strong><ul style="margin:6px 0 0 18px">' + immediateWarnings.map(w=>`<li>${w}</li>`).join('') + '</ul></div>';
+    futureWarnings.innerHTML = '<div class="alert warn"><strong>' + (t('msg.immediateWarnings') || 'Immediate warnings:') + '</strong><ul style="margin:6px 0 0 18px">' + immediateWarnings.map(w=>`<li>${w}</li>`).join('') + '</ul></div>';
   } else {
-    futureWarnings.innerHTML = '<div class="alert ok">No immediate critical warnings based on provided inputs.</div>';
+    futureWarnings.innerHTML = '<div class="alert ok">' + (t('msg.noImmediate') || 'No immediate critical warnings based on provided inputs.') + '</div>';
   }
 
   // cropping patterns info
@@ -625,26 +1023,26 @@ async function analyze() {
   // forecast-based future warnings (if coords available) — fetch up to 7 days for overview
   if (DISTRICT_COORDS[district]) {
     const coords = DISTRICT_COORDS[district];
-    statusBadge.textContent = 'Fetching forecast…';
+    statusBadge.textContent = t('status.fetching');
     const dailyJson = await fetchDailyForecast(coords.lat, coords.lon, 7);
-    statusBadge.textContent = 'Weather updated';
+    statusBadge.textContent = t('status.updated');
     if (dailyJson && dailyJson.daily) {
       const dArr = makeDailyArrayFromOpenMeteo(dailyJson);
       const w = warningsFromForecast(dArr);
       if (w.length) {
-        futureWarnings.innerHTML += '<div style="margin-top:8px" class="alert danger"><strong>Forecast warnings:</strong><ul style="margin:6px 0 0 18px">' + w.map(x=>`<li>${x}</li>`).join('') + '</ul></div>';
+        futureWarnings.innerHTML += '<div style="margin-top:8px" class="alert danger"><strong>' + (t('msg.forecastWarnings') || 'Forecast warnings:') + '</strong><ul style="margin:6px 0 0 18px">' + w.map(x=>`<li>${x}</li>`).join('') + '</ul></div>';
       } else {
-        futureWarnings.innerHTML += '<div style="margin-top:8px" class="alert ok">No severe forecast warnings for the next week.</div>';
+        futureWarnings.innerHTML += '<div style="margin-top:8px" class="alert ok">' + (t('msg.noSevere') || 'No severe forecast warnings for the next week.') + '</div>';
       }
       window._lastForecastDaily = dArr; // store for later PDF or checks
     } else {
-      futureWarnings.innerHTML += '<div class="small" style="margin-top:8px;color:var(--muted)">Forecast unavailable for future warnings.</div>';
+      futureWarnings.innerHTML += '<div class="small" style="margin-top:8px;color:var(--muted)">' + (t('msg.forecastUnavailable') || 'Forecast unavailable for future warnings.') + '</div>';
     }
   }
 
   // Present main suggestions text
-  txt += 'Recommendations (summary):\n' + irr.slice(0,3).map(r=>'• '+r).join('\n') + '\n\n';
-  txt += 'Notes: ' + cropObj.info + '\n';
+  txt += (t('msg.recommendationsSummary') || 'Recommendations (summary):') + '\n' + irr.slice(0,3).map(r=>'• '+r).join('\n') + '\n\n';
+  txt += (t('msg.notes') || 'Notes: ') + cropObj.info + '\n';
 
   suggestionsArea.innerText = txt;
 
@@ -655,19 +1053,19 @@ async function analyze() {
   window._lastReport = {
     title: 'Crop Weather Advisor — Report',
     generatedAt: new Date().toLocaleString(),
-    state, district, crop: cropName, temp: tempVal, humidity, recentRain, wind, score,
+    state, district, crop: cropName, cropDisplay, temp: tempVal, humidity, recentRain, wind, score,
     irrigation: irr, warningsImmediate: immediateWarnings, warningsForecast: window._lastForecastDaily || [], text: txt
   };
 }
 
 /* ---------- Forecast modal rendering & PDF ---------- */
 function openModal(title, html, rawText='') {
-  document.getElementById('modalTitle').innerText = title || 'Forecast';
+  document.getElementById('modalTitle').innerText = title || t('controls.forecast');
   modalContent.innerHTML = html || '';
   modalBackdrop.style.display = 'flex';
   modalBackdrop.setAttribute('aria-hidden','false');
   modalPdf.dataset.raw = rawText || '';
-  modalPdf.dataset.title = title || 'Forecast';
+  modalPdf.dataset.title = title || t('controls.forecast');
 }
 function closeModal(){ modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); modalContent.innerHTML = ''; modalPdf.dataset.raw=''; modalPdf.dataset.title=''; }
 modalClose.addEventListener('click', closeModal);
@@ -683,32 +1081,32 @@ async function fetchDailyForecast(lat, lon, days=3) {
 /* Render functions for different horizons */
 async function handleNext3() {
   const state = stateSel.value; const district = districtSel.value;
-  if (!state) { suggestionsArea.innerText = 'Please select a State.'; return; }
-  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = 'Please select a district.'; return; }
+  if (!state) { suggestionsArea.innerText = t('msg.selectState'); return; }
+  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = t('msg.selectDistrict'); return; }
   const coords = DISTRICT_COORDS[district];
-  if (!coords) { openModal('Next 3 Days', `<div class="forecast-block">Coordinates unavailable for selected location.</div>`, 'No data'); return; }
-  openModal('Next 3 Days', `<div class="forecast-block">Fetching…</div>`, '');
+  if (!coords) { openModal(t('controls.next3'), `<div class="forecast-block">${t('msg.forecastUnavailable')}</div>`, 'No data'); return; }
+  openModal(t('controls.next3'), `<div class="forecast-block">Fetching…</div>`, '');
   const data = await fetchDailyForecast(coords.lat, coords.lon, 3);
-  if (!data || !data.daily) { openModal('Next 3 Days', `<div class="forecast-block">Forecast unavailable.</div>`, 'Unavailable'); return; }
+  if (!data || !data.daily) { openModal(t('controls.next3'), `<div class="forecast-block">${t('msg.forecastUnavailable')}</div>`, 'Unavailable'); return; }
   const days = data.daily.time.map((t,i)=>({date:t,tmin:data.daily.temperature_2m_min[i],tmax:data.daily.temperature_2m_max[i],rain:data.daily.precipitation_sum ? data.daily.precipitation_sum[i] : 0}));
-  let html = `<div class="small">Forecast for <strong>${district}, ${state}</strong></div>`;
+  let html = `<div class="small">${t('msg.summary')} <strong>${district}, ${state}</strong></div>`;
   days.forEach(d => {
-    html += `<div class="forecast-block"><div class="forecast-day"><div style="font-weight:700">${d.date}</div><div style="text-align:right">${d.tmin}–${d.tmax}°C</div></div><div class="small" style="margin-top:6px">Rain: ${d.rain} mm</div></div>`;
+    html += `<div class="forecast-block"><div class="forecast-day"><div style="font-weight:700">${d.date}</div><div style="text-align:right">${d.tmin}–${d.tmax}°C</div></div><div class="small" style="margin-top:6px">${t('controls.recentRain')}: ${d.rain} mm</div></div>`;
   });
-  const raw = days.map(d => `${d.date}: ${d.tmin}–${d.tmax}°C, Rain ${d.rain} mm`).join('\n');
-  openModal('Next 3 Days Forecast', html, raw);
+  const raw = days.map(d => `${d.date}: ${d.tmin}–${d.tmax}°C, ${t('controls.recentRain')} ${d.rain} mm`).join('\n');
+  openModal(t('controls.next3'), html, raw);
 }
 
 /* Weekly Overview (7 days) — summary + recommendations */
 async function handleWeeklyOverview() {
   const state = stateSel.value; const district = districtSel.value;
-  if (!state) { suggestionsArea.innerText = 'Please select a State.'; return; }
-  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = 'Please select a district.'; return; }
+  if (!state) { suggestionsArea.innerText = t('msg.selectState'); return; }
+  if (DISTRICTS[state] && DISTRICTS[state].length && !district) { suggestionsArea.innerText = t('msg.selectDistrict'); return; }
   const coords = DISTRICT_COORDS[district];
-  if (!coords) { openModal('Weekly Overview', `<div class="forecast-block">Coordinates unavailable for selected location.</div>`, 'No data'); return; }
-  openModal('Weekly Overview', `<div class="forecast-block">Fetching weekly data…</div>`, '');
+  if (!coords) { openModal(t('controls.next7'), `<div class="forecast-block">${t('msg.forecastUnavailable')}</div>`, 'No data'); return; }
+  openModal(t('controls.next7'), `<div class="forecast-block">Fetching weekly data…</div>`, '');
   const data = await fetchDailyForecast(coords.lat, coords.lon, 7);
-  if (!data || !data.daily) { openModal('Weekly Overview', `<div class="forecast-block">Forecast unavailable.</div>`, 'Unavailable'); return; }
+  if (!data || !data.daily) { openModal(t('controls.next7'), `<div class="forecast-block">${t('msg.forecastUnavailable')}</div>`, 'Unavailable'); return; }
 
   const days = data.daily.time.map((t,i)=>({date:t,tmin:data.daily.temperature_2m_min[i],tmax:data.daily.temperature_2m_max[i],rain:data.daily.precipitation_sum ? data.daily.precipitation_sum[i] : 0}));
   // summary metrics
@@ -718,40 +1116,52 @@ async function handleWeeklyOverview() {
 
   // build recommendations (simple heuristics)
   const recs = [];
-  if (totalRain >= 50) recs.push('Significant rain expected this week — postpone irrigation and watch for waterlogging.');
-  if (avgMax >= 38) recs.push('High average max temps — prioritize irrigation during early morning / evening; consider shade for sensitive crops.');
-  if (days.some(d=>d.rain >= 40)) recs.push('One or more heavy rain days expected — secure soil bunds and check drainage.');
-  if (recs.length === 0) recs.push('No extreme conditions expected — follow normal irrigation schedule and monitor daily.');
+  if (totalRain >= 50) recs.push(t('msg.significantRain'));
+  if (avgMax >= 38) recs.push(t('msg.highAvgTemp'));
+  if (days.some(d=>d.rain >= 40)) recs.push(t('msg.heavyRainDays'));
+  if (recs.length === 0) recs.push(t('msg.noExtreme'));
 
   // warnings
   const warnings = warningsFromForecast(days);
 
   // prepare HTML
   let html = `<div class="small">7-day overview for <strong>${district}, ${state}</strong></div>`;
-  html += `<div class="forecast-block"><div style="font-weight:700">Summary</div><div class="small" style="margin-top:6px">Avg Min: ${avgMin}°C — Avg Max: ${avgMax}°C — Total Rain: ${totalRain} mm</div></div>`;
-  html += `<div class="forecast-block"><div style="font-weight:700">Recommendations</div><ul style="margin:6px 0 0 18px;color:var(--muted)">${recs.map(r=>`<li>${r}</li>`).join('')}</ul></div>`;
-  if (warnings.length) html += `<div class="forecast-block"><div style="font-weight:700;color:var(--alert)">Warnings</div><ul style="margin:6px 0 0 18px;color:var(--muted)">${warnings.map(w=>`<li>${w}</li>`).join('')}</ul></div>`;
-  html += `<div style="margin-top:10px;"><details><summary style="cursor:pointer">Daily details</summary>${days.map(d=>`<div class="forecast-block"><div class="forecast-day"><div style="font-weight:700">${d.date}</div><div style="text-align:right">${d.tmin}–${d.tmax}°C</div></div><div class="small" style="margin-top:6px">Rain: ${d.rain} mm</div></div>`).join('')}</details></div>`;
+  html += `<div class="forecast-block"><div style="font-weight:700">${t('msg.summary')}</div><div class="small" style="margin-top:6px">${t('msg.avgMin')}: ${avgMin}°C — ${t('msg.avgMax')}: ${avgMax}°C — ${t('msg.totalRain')}: ${totalRain} mm</div></div>`;
+  html += `<div class="forecast-block"><div style="font-weight:700">${t('msg.recommendations')}</div><ul style="margin:6px 0 0 18px;color:var(--muted)">${recs.map(r=>`<li>${r}</li>`).join('')}</ul></div>`;
+  if (warnings.length) html += `<div class="forecast-block"><div style="font-weight:700;color:var(--alert)">${t('msg.warnings')}</div><ul style="margin:6px 0 0 18px;color:var(--muted)">${warnings.map(w=>`<li>${w}</li>`).join('')}</ul></div>`;
+  html += `<div style="margin-top:10px;"><details><summary style="cursor:pointer">${t('msg.dailyDetails')}</summary>${days.map(d=>`<div class="forecast-block"><div class="forecast-day"><div style="font-weight:700">${d.date}</div><div style="text-align:right">${d.tmin}–${d.tmax}°C</div></div><div class="small" style="margin-top:6px">${t('controls.recentRain')}: ${d.rain} mm</div></div>`).join('')}</details></div>`;
 
-  const raw = [`Summary: AvgMin ${avgMin}°C, AvgMax ${avgMax}°C, Total Rain ${totalRain} mm`].concat(days.map(d=>`${d.date}: ${d.tmin}–${d.tmax}°C, Rain ${d.rain} mm`)).join('\n');
+  const raw = [`${t('msg.summary')}: ${t('msg.avgMin')} ${avgMin}°C, ${t('msg.avgMax')} ${avgMax}°C, ${t('msg.totalRain')} ${totalRain} mm`].concat(days.map(d=>`${d.date}: ${d.tmin}–${d.tmax}°C, ${t('controls.recentRain')} ${d.rain} mm`)).join('\n');
 
-  openModal('Weekly Overview', html, raw);
+  openModal(t('controls.next7'), html, raw);
 }
 
-/* modal PDF export (styled readable white background) */
-modalPdf.addEventListener('click', () => {
+/* modal PDF export (uses html2canvas to render complex scripts) */
+modalPdf.addEventListener('click', async () => {
   const raw = modalPdf.dataset.raw || '';
-  const title = modalPdf.dataset.title || 'Forecast';
+  const title = modalPdf.dataset.title || t('controls.forecast');
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({unit:'mm',format:'a4'});
-  // white page with dark text for readability
-  doc.setTextColor(20,20,20);
-  doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.text(title, 14, 14);
-  doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.text('Crop Weather Advisor', 14, 20);
-  const lines = doc.splitTextToSize(raw || 'No data', 180);
-  doc.setFontSize(10); doc.setTextColor(30,30,30);
-  doc.text(lines, 14, 30);
+
+  // Create a printable div that uses white background and dark text so html2canvas renders glyphs properly
+  const tempDiv = document.createElement('div');
+  tempDiv.style.width = '794px'; // about A4 at 96dpi
+  tempDiv.style.background = '#ffffff';
+  tempDiv.style.color = '#000000';
+  tempDiv.style.padding = '20px';
+  tempDiv.style.fontFamily = "'Noto Sans Devanagari', 'Noto Sans Bengali', sans-serif";
+  tempDiv.innerHTML = `<h2 style="margin-top:0">${title}</h2><pre style="white-space:pre-wrap">${raw || t('msg.noData')}</pre>`;
+  document.body.appendChild(tempDiv);
+
+  // use html2canvas to rasterize the div (preserves complex scripts) and then add to PDF as image
+  const canvas = await html2canvas(tempDiv, { scale: 2 });
+  const imgData = canvas.toDataURL('image/png');
+  const imgProps = doc.getImageProperties(imgData);
+  const pdfWidth = doc.internal.pageSize.getWidth();
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
   doc.save(`${title.replace(/\s+/g,'_')}.pdf`);
+  tempDiv.remove();
 });
 
 /* ---------- Wire UI ---------- */
@@ -767,49 +1177,10 @@ next3Btn.addEventListener('click', handleNext3);
 next7Btn.addEventListener('click', handleWeeklyOverview);
 
 analyzeBtn.addEventListener('click', analyze);
-downloadReportBtn.addEventListener('click', () => {
+downloadReportBtn.addEventListener('click', async () => {
   const rep = window._lastReport;
-  if (!rep) { alert('Run analysis first'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'mm',format:'a4'});
-  // white background + dark text for readability
-  doc.setTextColor(20,20,20);
-  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.text('Crop Weather Advisor — Report', 14, 12);
-  doc.setFontSize(9); doc.setFont('helvetica','normal');
-  doc.text(`Generated: ${rep.generatedAt}`, 14, 18);
-  doc.text(`Location: ${rep.state}${rep.district ? ' / '+rep.district : ''}`, 140, 18, {align:'right'});
-  let y = 30;
-  doc.setFontSize(10); doc.setFont('helvetica','bold');
-  doc.text('Parameter', 14, y);
-  doc.text('Value', 90, y);
-  doc.text('Notes', 150, y);
-  y += 6;
-  doc.setFont('helvetica','normal');
-  function row(label, value, note) {
-    if (y > 260) { doc.addPage(); y = 20; }
-    doc.text(label, 14, y);
-    doc.text(String(value), 90, y);
-    const wrapped = doc.splitTextToSize(String(note), 54);
-    doc.text(wrapped, 150, y);
-    y += 6 * wrapped.length;
-  }
-  row('Crop', rep.crop, '');
-  row('Temp (obs)', rep.temp + ' °C', `Compatibility ${rep.score}%`);
-  row('Humidity', isNaN(rep.humidity) ? 'N/A' : rep.humidity+' %', '');
-  row('Recent rain', isNaN(rep.recentRain) ? 'N/A' : rep.recentRain+' mm', '');
-  row('Wind', isNaN(rep.wind) ? 'N/A' : rep.wind + ' m/s', '');
-  y += 6;
-  doc.setFont('helvetica','bold'); doc.text('Irrigation guidance', 14, y); y += 6;
-  doc.setFont('helvetica','normal');
-  const irrLines = doc.splitTextToSize((rep.irrigation || []).join('\n'), 180);
-  doc.text(irrLines, 14, y); y += irrLines.length * 6;
-  if (rep.warningsImmediate && rep.warningsImmediate.length) {
-    y += 6; doc.setFont('helvetica','bold'); doc.text('Immediate warnings', 14, y); y += 6;
-    doc.setFont('helvetica','normal');
-    const wlines = doc.splitTextToSize(rep.warningsImmediate.join('\n'), 180);
-    doc.text(wlines, 14, y); y += wlines.length * 6;
-  }
-  doc.save(`${rep.crop.replace(/\s+/g,'_')}_CWA_Report.pdf`);
+  if (!rep) { alert(t('msg.runAnalysis') || 'Run analysis first'); return; }
+  await downloadReportPdf(rep);
 });
 
 /* modal close */
@@ -821,6 +1192,36 @@ document.getElementById('modalClose').addEventListener('click', closeModal);
   if (!el) return;
   el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); analyze(); }});
 });
+
+/* ---------- PDF helper and download ---------- */
+async function downloadReportPdf(rep) {
+  const title = (rep.cropDisplay || rep.crop) + ' - ' + t('report.title');
+  const tempDiv = document.createElement('div');
+  tempDiv.style.width = '794px';
+  tempDiv.style.background = '#ffffff';
+  tempDiv.style.color = '#000000';
+  tempDiv.style.padding = '20px';
+  tempDiv.style.fontFamily = "'Noto Sans Devanagari', 'Noto Sans Bengali', sans-serif";
+  tempDiv.innerHTML = `<h2 style="margin-top:0">${title}</h2><div>${t('msg.generated')}: ${rep.generatedAt}</div><div>${t('controls.stateLabel')}: ${rep.state}${rep.district ? ' / '+rep.district : ''}</div><hr>`;
+  tempDiv.innerHTML += `<pre style="white-space:pre-wrap">${rep.text}</pre>`;
+  document.body.appendChild(tempDiv);
+
+  const canvas = await html2canvas(tempDiv, { scale: 2 });
+  const imgData = canvas.toDataURL('image/png');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:'a4'});
+  const imgProps = doc.getImageProperties(imgData);
+  const pdfWidth = doc.internal.pageSize.getWidth();
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  doc.save(`${(rep.crop).replace(/\s+/g,'_')}_CWA_Report.pdf`);
+  tempDiv.remove();
+}
+
+/* initial render */
+updateStaticTexts();
+renderDynamicTexts();
 </script>
 </body>
 </html>
+
